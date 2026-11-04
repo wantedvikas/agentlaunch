@@ -1,36 +1,81 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AgentLaunch Community
 
-## Getting Started
+**A SaaS starter coding agents can work with:** Next.js, Supabase and a polished, accessible design system, under the MIT licence.
 
-First, run the development server:
+> **Status: v0.1.0 in development (milestone C1 of 3).** The UI foundation, marketing pages and dashboard shell work today. Supabase auth and per-user data (C2), and `pnpm doctor` plus the full docs (C3), are next. See [docs/FEATURE_MATRIX.md](docs/FEATURE_MATRIX.md) for exactly what's shipped.
+
+![Home page, desktop](docs/screenshots/home-desktop-light.png)
+
+## Who it's for
+
+Solo founders and developers, including people building with AI coding agents, who want a clean, typed foundation they can change confidently.
+
+## What works today (C1)
+
+- Next.js 16 App Router, React 19, TypeScript strict, Tailwind CSS 4, pnpm
+- A design-token system (color, type, radius, shadow, motion), light/dark/system themes with no flash on load, and reduced-motion support
+- 22 accessible UI components on Radix primitives: button, input, textarea, select, checkbox, switch, tabs, card, badge, dialog, sheet, dropdown menu, toast, table, skeleton, alert, avatar, separator, label, form field, empty state, error state
+- Marketing home and features pages, mobile navigation, and a dashboard shell with a sidebar and mobile drawer
+- Branded 404, error and loading states; metadata, sitemap, robots and a generated Open Graph image
+- Vitest unit tests, Playwright smoke tests at 375px and 1440px, and GitHub Actions CI
+
+The dashboard runs in **preview mode** until Supabase is connected in C2. It says so on screen and never pretends to save data.
+
+## Quickstart
+
+Requires Node 22+.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+corepack enable pnpm
+pnpm install
+cp .env.example .env.local
+pnpm dev            # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Scripts
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+| Command                                                     | What it does                                                                             |
+| ----------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `pnpm dev`                                                  | Dev server                                                                               |
+| `pnpm check`                                                | Lint + typecheck + unit tests + production build                                         |
+| `pnpm lint` / `pnpm typecheck` / `pnpm test` / `pnpm build` | Individual checks                                                                        |
+| `pnpm format` / `pnpm format:check`                         | Prettier                                                                                 |
+| `pnpm test:e2e`                                             | Playwright against a production build (run `pnpm exec playwright install chromium` once) |
+| `SCREENSHOTS=1 pnpm test:e2e screenshots`                   | Regenerate `docs/screenshots/`                                                           |
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project structure
 
-## Learn More
+```
+src/
+  app/
+    (marketing)/       /, /features
+    (dashboard)/       /dashboard, /dashboard/projects, /dashboard/settings
+  components/
+    ui/                design-system primitives
+    marketing/         header, footer, sections
+    dashboard/         sidebar nav, page header
+    theme/             theme script and toggle
+  features/            one folder per feature (schema, components, later actions)
+  config/site.ts       app name, nav, links: rebrand here
+  lib/utils.ts
+tests/unit, tests/e2e
+docs/                  feature matrix, changelog, test results, screenshots
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Customising
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Rename the app:** edit `src/config/site.ts`.
+- **Change the look:** edit the tokens in `src/app/globals.css`. Each token has a light value and a `.dark` value.
+- **Environment:** see `.env.example`. No variable is required yet.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Community vs Pro
 
-## Deploy on Vercel
+Pro is a commercial edition **in development and not for sale yet**. It is planned to add Stripe billing, email, a blog, file uploads and premium layouts. Community stays fully usable on its own. See [docs/FEATURE_MATRIX.md](docs/FEATURE_MATRIX.md).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Contributing and security
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+See [CONTRIBUTING.md](CONTRIBUTING.md), [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) and [SECURITY.md](SECURITY.md).
+
+## Licence
+
+[MIT](LICENSE). Your deployed app contains no licence checks and no dependency on us.
