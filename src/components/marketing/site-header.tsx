@@ -26,8 +26,11 @@ export function SiteHeader() {
         </nav>
         <div className="ml-auto flex items-center gap-2">
           <ThemeToggle />
+          <Button asChild size="sm" variant="ghost" className="hidden sm:inline-flex">
+            <Link href="/login">Sign in</Link>
+          </Button>
           <Button asChild size="sm" className="hidden sm:inline-flex">
-            <Link href="/dashboard">Open dashboard</Link>
+            <Link href="/signup">Get started</Link>
           </Button>
           <Sheet>
             <SheetTrigger asChild>
@@ -49,9 +52,14 @@ export function SiteHeader() {
                   </Link>
                 ))}
               </nav>
-              <Button asChild className="mt-auto">
-                <Link href="/dashboard">Open dashboard</Link>
-              </Button>
+              <div className="mt-auto grid gap-2">
+                <Button asChild variant="outline">
+                  <Link href="/login">Sign in</Link>
+                </Button>
+                <Button asChild>
+                  <Link href="/signup">Get started</Link>
+                </Button>
+              </div>
             </SheetContent>
           </Sheet>
         </div>

@@ -19,8 +19,8 @@ export function SiteFooter() {
           <Link href="/features" className="hover:text-foreground">
             Features
           </Link>
-          <Link href="/dashboard" className="hover:text-foreground">
-            Dashboard
+          <Link href="/login" className="hover:text-foreground">
+            Sign in
           </Link>
           {siteConfig.repoUrl && (
             <a href={siteConfig.repoUrl} className="hover:text-foreground">

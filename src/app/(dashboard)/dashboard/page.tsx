@@ -1,62 +1,114 @@
-import { FolderKanban } from "lucide-react";
+import { ArrowRight, FolderKanban } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 
 import { PageHeader } from "@/components/dashboard/page-header";
-import { PreviewNotice } from "@/components/dashboard/preview-notice";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
+import { Skeleton } from "@/components/ui/skeleton";
+import { getProfile } from "@/features/profile/queries";
+import { ProjectFormDialog } from "@/features/projects/components/project-form-dialog";
+import { listProjects } from "@/features/projects/queries";
+import { statusLabels } from "@/features/projects/schema";
 
 export const metadata: Metadata = { title: "Overview" };
 
-const setup = [
-  { label: "Copy .env.example to .env.local", hint: "Add your own Supabase project URL and keys." },
-  {
-    label: "Apply database migrations",
-    hint: "Creates the profiles and projects tables with RLS.",
-  },
-  { label: "Create an account", hint: "Sign up, confirm your email and come back here." },
-];
+export default function DashboardPage(props: PageProps<"/dashboard">) {
+  return (
+    <Suspense fallback={<OverviewSkeleton />}>
+      <Overview searchParams={props.searchParams} />
+    </Suspense>
+  );
+}
 
-export default function DashboardPage() {
+async function Overview({
+  searchParams,
+}: {
+  searchParams: PageProps<"/dashboard">["searchParams"];
+}) {
+  const [profile, projects, sp] = await Promise.all([getProfile(), listProjects(), searchParams]);
+  const counts = { active: 0, paused: 0, archived: 0 };
+  projects.forEach((p) => counts[p.status]++);
+
   return (
     <>
-      <PageHeader title="Overview" description="Your workspace at a glance." />
-      <PreviewNotice />
-      <div className="grid gap-6 lg:grid-cols-[1fr_1.2fr]">
-        <Card>
-          <CardHeader>
-            <CardTitle>Finish setup</CardTitle>
-            <CardDescription>These steps connect the dashboard to real data.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ol className="space-y-4">
-              {setup.map((s, i) => (
-                <li key={s.label} className="flex gap-3">
-                  <span className="flex size-6 shrink-0 items-center justify-center rounded-full border font-mono text-xs">
-                    {i + 1}
-                  </span>
-                  <div>
-                    <p className="text-sm font-medium">{s.label}</p>
-                    <p className="text-sm text-muted-foreground">{s.hint}</p>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </CardContent>
-        </Card>
+      <PageHeader
+        title={profile.displayName ? `Welcome, ${profile.displayName}` : "Welcome"}
+        description="Your workspace at a glance."
+      />
+      {sp.notice === "password-updated" && (
+        <Alert variant="success">
+          <AlertDescription className="text-foreground">
+            Your password has been updated.
+          </AlertDescription>
+        </Alert>
+      )}
+      {projects.length === 0 ? (
         <EmptyState
           icon={FolderKanban}
           title="No projects yet"
-          description="Projects you create will show up here."
+          description="Create your first project to see it here."
           action={
-            <Button asChild variant="outline">
-              <Link href="/dashboard/projects">Go to projects</Link>
-            </Button>
+            <ProjectFormDialog>
+              <Button>New project</Button>
+            </ProjectFormDialog>
           }
         />
-      </div>
+      ) : (
+        <>
+          <dl className="grid gap-4 sm:grid-cols-3">
+            {(Object.keys(counts) as (keyof typeof counts)[]).map((s) => (
+              <Card key={s}>
+                <CardContent className="p-5">
+                  <dt className="text-sm text-muted-foreground">{statusLabels[s]} projects</dt>
+                  <dd className="mt-1 text-2xl font-semibold tabular-nums">{counts[s]}</dd>
+                </CardContent>
+              </Card>
+            ))}
+          </dl>
+          <Card>
+            <CardHeader className="flex-row items-center justify-between">
+              <div className="space-y-1">
+                <CardTitle>Recent projects</CardTitle>
+                <CardDescription>Your latest work.</CardDescription>
+              </div>
+              <Button asChild variant="ghost" size="sm">
+                <Link href="/dashboard/projects">
+                  View all <ArrowRight aria-hidden />
+                </Link>
+              </Button>
+            </CardHeader>
+            <CardContent>
+              <ul className="divide-y">
+                {projects.slice(0, 5).map((p) => (
+                  <li key={p.id} className="flex items-center justify-between gap-4 py-3">
+                    <span className="truncate font-medium">{p.name}</span>
+                    <Badge variant="outline">{statusLabels[p.status]}</Badge>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+        </>
+      )}
     </>
+  );
+}
+
+function OverviewSkeleton() {
+  return (
+    <div className="space-y-6" role="status" aria-label="Loading">
+      <Skeleton className="h-7 w-48" />
+      <div className="grid gap-4 sm:grid-cols-3">
+        <Skeleton className="h-24" />
+        <Skeleton className="h-24" />
+        <Skeleton className="h-24" />
+      </div>
+      <Skeleton className="h-64" />
+    </div>
   );
 }

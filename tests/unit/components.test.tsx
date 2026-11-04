@@ -1,11 +1,15 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { Button } from "@/components/ui/button";
 import { FormField } from "@/components/ui/form-field";
 import { Input } from "@/components/ui/input";
+import { createProject } from "@/features/projects/actions";
 import { ProjectFormDialog } from "@/features/projects/components/project-form-dialog";
+
+// Server actions can't run in jsdom; the real ones are covered by Playwright and pgTAP.
+vi.mock("@/features/projects/actions", () => ({ createProject: vi.fn(), updateProject: vi.fn() }));
 
 describe("Button", () => {
   it("is disabled and busy while loading", () => {
@@ -38,19 +42,49 @@ describe("FormField", () => {
 });
 
 describe("ProjectFormDialog", () => {
-  it("shows validation errors, then an honest not-saved notice on valid input", async () => {
+  beforeEach(() => vi.mocked(createProject).mockReset());
+
+  async function openDialog() {
     const user = userEvent.setup();
-    render(<ProjectFormDialog />);
+    render(
+      <ProjectFormDialog>
+        <Button>New project</Button>
+      </ProjectFormDialog>,
+    );
+    await user.click(screen.getByRole("button", { name: "New project" }));
+    await screen.findByRole("dialog", { name: "New project" });
+    return user;
+  }
 
-    await user.click(screen.getByRole("button", { name: /new project/i }));
-    const dialog = await screen.findByRole("dialog", { name: "New project" });
-    expect(dialog).toBeInTheDocument();
-
+  it("validates on the client before calling the server", async () => {
+    const user = await openDialog();
     await user.click(screen.getByRole("button", { name: "Create project" }));
     expect(await screen.findByText("Name must be at least 2 characters.")).toBeInTheDocument();
+    expect(createProject).not.toHaveBeenCalled();
+  });
 
-    await user.type(screen.getByLabelText(/name/i), "Atlas");
+  it("submits trimmed values and closes on success", async () => {
+    vi.mocked(createProject).mockResolvedValue({ ok: true });
+    const user = await openDialog();
+    await user.type(screen.getByLabelText(/^name/i), "  Atlas  ");
     await user.click(screen.getByRole("button", { name: "Create project" }));
-    expect(await screen.findByText("Not saved")).toBeInTheDocument();
+    expect(createProject).toHaveBeenCalledWith({
+      name: "Atlas",
+      description: "",
+      status: "active",
+    });
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
+  });
+
+  it("shows the server's error and stays open", async () => {
+    vi.mocked(createProject).mockResolvedValue({
+      ok: false,
+      error: "Your session has ended. Sign in again.",
+    });
+    const user = await openDialog();
+    await user.type(screen.getByLabelText(/^name/i), "Atlas");
+    await user.click(screen.getByRole("button", { name: "Create project" }));
+    expect(await screen.findByText("Your session has ended. Sign in again.")).toBeInTheDocument();
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
   });
 });

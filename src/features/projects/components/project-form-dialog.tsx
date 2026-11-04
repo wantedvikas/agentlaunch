@@ -1,11 +1,9 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CircleAlert, Plus } from "lucide-react";
 import * as React from "react";
 import { Controller, useForm } from "react-hook-form";
 
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -27,55 +25,75 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "@/components/ui/toast";
+import { FormMessage } from "@/features/auth/components/form-error";
 
-import { projectInputSchema, projectStatuses, type ProjectInput } from "../schema";
+import { createProject, updateProject } from "../actions";
+import type { Project } from "../queries";
+import { projectInputSchema, projectStatuses, statusLabels, type ProjectInput } from "../schema";
 
-const statusLabels: Record<(typeof projectStatuses)[number], string> = {
-  active: "Active",
-  paused: "Paused",
-  archived: "Archived",
-};
-
-/**
- * Create-project dialog. Validation is real; saving is not wired up until the database is
- * connected, so a valid submit says so plainly instead of pretending to save.
- */
-export function ProjectFormDialog() {
+/** Create (no `project`) or edit (with `project`) dialog. The trigger is passed as children. */
+export function ProjectFormDialog({
+  project,
+  children,
+}: {
+  project?: Project;
+  children: React.ReactNode;
+}) {
   const [open, setOpen] = React.useState(false);
-  const [notSaved, setNotSaved] = React.useState(false);
+  const [serverError, setServerError] = React.useState<string | null>(null);
+  const defaults: ProjectInput = {
+    name: project?.name ?? "",
+    description: project?.description ?? "",
+    status: project?.status ?? "active",
+  };
   const form = useForm<ProjectInput>({
     resolver: zodResolver(projectInputSchema),
-    defaultValues: { name: "", description: "", status: "active" },
+    defaultValues: defaults,
   });
   const { errors, isSubmitting } = form.formState;
 
   function onOpenChange(next: boolean) {
     setOpen(next);
-    if (!next) {
-      form.reset();
-      setNotSaved(false);
+    if (next) {
+      form.reset(defaults);
+      setServerError(null);
     }
+  }
+
+  async function onSubmit(values: ProjectInput) {
+    setServerError(null);
+    const result = project ? await updateProject(project.id, values) : await createProject(values);
+    if (result.ok) {
+      setOpen(false);
+      toast({ title: project ? "Project updated" : "Project created", variant: "success" });
+      return;
+    }
+    setServerError(result.error);
+    Object.entries(result.fieldErrors ?? {}).forEach(([k, message]) =>
+      form.setError(k as keyof ProjectInput, { message }),
+    );
   }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogTrigger asChild>
-        <Button>
-          <Plus aria-hidden /> New project
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>New project</DialogTitle>
+          <DialogTitle>{project ? "Edit project" : "New project"}</DialogTitle>
           <DialogDescription>
-            Give your project a name and an optional description.
+            {project
+              ? "Update the details below."
+              : "Give your project a name and an optional description."}
           </DialogDescription>
         </DialogHeader>
         <form
+          method="post"
           noValidate
           className="grid gap-4"
-          onSubmit={form.handleSubmit(() => setNotSaved(true))}
+          onSubmit={form.handleSubmit(onSubmit)}
         >
+          <FormMessage error={serverError} />
           <FormField label="Name" required error={errors.name?.message}>
             <Input autoComplete="off" {...form.register("name")} />
           </FormField>
@@ -106,16 +124,6 @@ export function ProjectFormDialog() {
               </FormField>
             )}
           />
-          {notSaved && (
-            <Alert variant="warning">
-              <CircleAlert aria-hidden />
-              <AlertTitle>Not saved</AlertTitle>
-              <AlertDescription>
-                The form is valid, but no database is connected yet. Connect Supabase to save
-                projects.
-              </AlertDescription>
-            </Alert>
-          )}
           <DialogFooter>
             <DialogClose asChild>
               <Button type="button" variant="outline">
@@ -123,7 +131,7 @@ export function ProjectFormDialog() {
               </Button>
             </DialogClose>
             <Button type="submit" loading={isSubmitting}>
-              Create project
+              {project ? "Save changes" : "Create project"}
             </Button>
           </DialogFooter>
         </form>

@@ -44,14 +44,14 @@ export const coreFeatures: readonly (Feature & { status: "ready" | "planned" })[
     title: "Supabase authentication",
     description:
       "Email sign-up with verification, password reset, optional Google OAuth and server-side session refresh.",
-    status: "planned",
+    status: "ready",
   },
   {
     icon: Database,
     title: "Row-level security by default",
     description:
       "Migration-managed tables with owner-only policies and SQL tests proving one user can't read another's data.",
-    status: "planned",
+    status: "ready",
   },
   {
     icon: Stethoscope,
@@ -72,7 +72,7 @@ export const coreFeatures: readonly (Feature & { status: "ready" | "planned" })[
     title: "Security patterns, not promises",
     description:
       "Server-side authorization in every data path, validated inputs and a documented security checklist.",
-    status: "planned",
+    status: "ready",
   },
   {
     icon: Workflow,

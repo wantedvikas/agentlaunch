@@ -14,3 +14,9 @@ export const projectInputSchema = z.object({
 });
 
 export type ProjectInput = z.infer<typeof projectInputSchema>;
+
+export const statusLabels: Record<(typeof projectStatuses)[number], string> = {
+  active: "Active",
+  paused: "Paused",
+  archived: "Archived",
+};

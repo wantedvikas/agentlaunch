@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 
 import { DashboardNav } from "@/components/dashboard/dashboard-nav";
 import { DashboardMobileNav } from "@/components/dashboard/mobile-nav";
 import { Logo } from "@/components/marketing/logo";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { UserMenu } from "@/components/dashboard/user-menu";
+import { Skeleton } from "@/components/ui/skeleton";
+import { getProfile } from "@/features/profile/queries";
 
 export const metadata: Metadata = { robots: { index: false, follow: false } };
 
@@ -32,9 +35,9 @@ export default function DashboardLayout({ children }: LayoutProps<"/">) {
           </div>
           <div className="ml-auto flex items-center gap-2">
             <ThemeToggle />
-            <Avatar className="size-8" aria-label="Guest (not signed in)">
-              <AvatarFallback>G</AvatarFallback>
-            </Avatar>
+            <Suspense fallback={<Skeleton className="size-8 rounded-full" />}>
+              <HeaderUser />
+            </Suspense>
           </div>
         </header>
         <main id="main" className="mx-auto w-full max-w-5xl flex-1 space-y-6 p-4 sm:p-6 lg:p-8">
@@ -43,4 +46,10 @@ export default function DashboardLayout({ children }: LayoutProps<"/">) {
       </div>
     </div>
   );
+}
+
+/** Reads the session, so it streams in behind Suspense instead of blocking the layout. */
+async function HeaderUser() {
+  const profile = await getProfile();
+  return <UserMenu email={profile.email} displayName={profile.displayName} />;
 }

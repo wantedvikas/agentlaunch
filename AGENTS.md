@@ -10,7 +10,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 # Agent guide: AgentLaunch Community
 
-> Early version (milestone C1). Full recipes arrive in C3: add a CRUD page, add an RLS table, extend tokens.
+> Early version (milestone C2). Full recipes arrive in C3: add a CRUD page, add an RLS table, extend tokens.
 
 ## Rules
 
@@ -23,6 +23,9 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 7. **No fake functionality.** If something can't work yet, the UI must say so.
 8. **Secrets:** never commit `.env*` files except `.env.example`. Never put secrets in `NEXT_PUBLIC_*` variables. Never log secret values.
 9. **Keep changes scoped.** No unrelated refactors or reformatting.
+10. **Authorize on the server, every time.** Every query and Server Action calls `requireUser()` / `getCurrentUser()` (`src/lib/permissions/auth.ts`) and filters by `owner_id`. RLS is the backstop, not the only check. The proxy redirect is UX, not security.
+11. **Schema changes only through migrations** in `supabase/migrations/`. Every new table: `revoke all`, minimal grants, `enable row level security`, owner policies, and a pgTAP test in `supabase/tests/`. Then run `pnpm db:types`.
+12. **Never use the Supabase secret / service_role key** in this app, and never bypass RLS.
 
 ## Next.js 16 specifics in this repo
 

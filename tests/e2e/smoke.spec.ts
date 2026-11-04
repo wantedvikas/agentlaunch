@@ -1,5 +1,10 @@
 import { expect, test } from "@playwright/test";
 
+import { DEMO_STATE } from "./helpers";
+
+const PUBLIC_PAGES = ["/", "/features", "/login", "/signup", "/reset-password"];
+const APP_PAGES = ["/dashboard", "/dashboard/projects", "/dashboard/settings"];
+
 test.describe("marketing", () => {
   test("home renders with working primary CTA", async ({ page }) => {
     await page.goto("/");
@@ -10,13 +15,7 @@ test.describe("marketing", () => {
   });
 
   test("no horizontal overflow", async ({ page }) => {
-    for (const path of [
-      "/",
-      "/features",
-      "/dashboard",
-      "/dashboard/projects",
-      "/dashboard/settings",
-    ]) {
+    for (const path of PUBLIC_PAGES) {
       await page.goto(path);
       const overflow = await page.evaluate(
         () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
@@ -29,13 +28,7 @@ test.describe("marketing", () => {
     const problems: string[] = [];
     page.on("console", (m) => m.type() === "error" && problems.push(m.text()));
     page.on("pageerror", (e) => problems.push(e.message));
-    for (const path of [
-      "/",
-      "/features",
-      "/dashboard",
-      "/dashboard/projects",
-      "/dashboard/settings",
-    ]) {
+    for (const path of PUBLIC_PAGES) {
       await page.goto(path);
       await page.waitForLoadState("networkidle");
     }
@@ -83,18 +76,31 @@ test.describe("mobile navigation", () => {
     await page.getByRole("dialog").getByRole("link", { name: "Features" }).click();
     await expect(page).toHaveURL(/\/features$/);
   });
-
-  test("dashboard drawer navigates and closes", async ({ page, isMobile }) => {
-    test.skip(!isMobile, "mobile only");
-    await page.goto("/dashboard");
-    await page.getByRole("button", { name: "Open navigation" }).click();
-    await page.getByRole("dialog").getByRole("link", { name: "Projects" }).click();
-    await expect(page).toHaveURL(/\/dashboard\/projects$/);
-    await expect(page.getByRole("dialog")).toBeHidden();
-  });
 });
 
-test.describe("dashboard", () => {
+test.describe("dashboard (signed in as seeded demo user)", () => {
+  test.use({ storageState: DEMO_STATE });
+
+  test("pages render without overflow or console errors", async ({ page }) => {
+    const problems: string[] = [];
+    page.on("console", (m) => m.type() === "error" && problems.push(m.text()));
+    page.on("pageerror", (e) => problems.push(e.message));
+    for (const path of APP_PAGES) {
+      await page.goto(path);
+      await page.waitForLoadState("networkidle");
+      const overflow = await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      );
+      expect(overflow, `overflow on ${path}`).toBeLessThanOrEqual(0);
+    }
+    expect(problems).toEqual([]);
+  });
+
+  test("shows the demo user's own seeded data", async ({ page }) => {
+    await page.goto("/dashboard/projects");
+    await expect(page.getByRole("row", { name: /Demo project \(seed data\)/ })).toBeVisible();
+  });
+
   test("sidebar marks the current page", async ({ page, isMobile }) => {
     test.skip(!!isMobile, "desktop sidebar");
     await page.goto("/dashboard/settings");
@@ -102,6 +108,15 @@ test.describe("dashboard", () => {
       "aria-current",
       "page",
     );
+  });
+
+  test("mobile drawer navigates and closes", async ({ page, isMobile }) => {
+    test.skip(!isMobile, "mobile only");
+    await page.goto("/dashboard");
+    await page.getByRole("button", { name: "Open navigation" }).click();
+    await page.getByRole("dialog").getByRole("link", { name: "Projects" }).click();
+    await expect(page).toHaveURL(/\/dashboard\/projects$/);
+    await expect(page.getByRole("dialog")).toBeHidden();
   });
 
   test("new project dialog validates and is keyboard-closable", async ({ page }) => {
@@ -115,4 +130,15 @@ test.describe("dashboard", () => {
     await expect(dialog).toBeHidden();
     await expect(page.getByRole("button", { name: /new project/i })).toBeFocused();
   });
+});
+
+test("forms submitted before hydration never put credentials in the URL", async ({ page }) => {
+  await page.route(/_next\/static\/chunks/, (route) => route.abort()); // keep React from loading
+  await page.goto("/login");
+  await page.getByLabel("Email").fill("someone@example.com");
+  await page.getByLabel("Password").fill("secret-value");
+  await page.getByRole("button", { name: "Sign in" }).click();
+  await page.waitForLoadState();
+  expect(page.url()).not.toContain("secret-value");
+  expect(page.url()).not.toContain("someone");
 });
