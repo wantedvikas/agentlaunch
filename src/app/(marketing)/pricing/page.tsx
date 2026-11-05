@@ -16,7 +16,7 @@ export default function PricingPage() {
   return (
     <Section className="flex flex-col items-center gap-10">
       <div className="space-y-3 text-center">
-        <h1 className="font-heading text-5xl font-light sm:text-6xl">Pricing</h1>
+        <h1 className="font-heading text-5xl font-semibold tracking-tight sm:text-6xl">Pricing</h1>
         <p className="text-lg text-muted-foreground">One simple plan. Cancel any time.</p>
       </div>
       <PlanCard>

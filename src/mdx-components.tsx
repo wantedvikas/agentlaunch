@@ -6,7 +6,9 @@ import Link from "next/link";
  * Styled with design tokens instead of a typography plugin.
  */
 const components: MDXComponents = {
-  h2: (props) => <h2 className="mt-12 mb-3 font-heading text-3xl font-normal" {...props} />,
+  h2: (props) => (
+    <h2 className="mt-12 mb-3 font-heading text-3xl font-semibold tracking-tight" {...props} />
+  ),
   h3: (props) => <h3 className="mt-8 mb-2 text-xl font-semibold" {...props} />,
   p: (props) => <p className="my-4 leading-7 text-foreground/90" {...props} />,
   ul: (props) => <ul className="my-4 ml-6 list-disc space-y-2" {...props} />,

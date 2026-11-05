@@ -1,45 +1,20 @@
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight, Check, Plus } from "lucide-react";
 import Link from "next/link";
 
 import { FeatureGrid } from "@/components/marketing/feature-grid";
 import { coreFeatures } from "@/components/marketing/features-data";
+import { AgentDemo } from "@/components/marketing/motion/agent-demo";
+import { AnimatedTerminal } from "@/components/marketing/motion/animated-terminal";
+import { Marquee } from "@/components/marketing/motion/marquee";
+import { Reveal } from "@/components/marketing/motion/reveal";
+import { ShowcaseTabs } from "@/components/marketing/motion/showcase-tabs";
+import { StackOrbit } from "@/components/marketing/motion/stack-orbit";
 import { Section, SectionHeading } from "@/components/marketing/section";
 import { Button } from "@/components/ui/button";
 import { siteConfig } from "@/config/site";
 
-// What `npx create-agentlaunch` actually prints (trimmed). Keep in sync with the CLI.
-const terminal: { prompt?: boolean; muted?: boolean; text: string }[] = [
-  { prompt: true, text: "npx create-agentlaunch my-app" },
-  { muted: true, text: "App name? (My App)" },
-  { muted: true, text: "Social sign-in providers? github" },
-  { muted: true, text: "Include Stripe billing …? (Y/n) y" },
-  { muted: true, text: "Include Basic admin …? (Y/n) y" },
-  { text: "" },
-  { text: "Creating My App in ./my-app" },
-  { text: "  modules:  email, analytics, blog, uploads," },
-  { text: "            ai, payments, admin, docker" },
-  { text: "  sign-in:  email, github" },
-  { text: "" },
-  { text: "Done. Next steps: cd my-app" },
-];
-
-const steps = [
-  {
-    title: "Scaffold",
-    command: "npx create-agentlaunch my-app",
-    body: "Choose sign-in providers and modules. Anything you skip is removed from the code, not hidden.",
-  },
-  {
-    title: "Connect",
-    command: "pnpm db:start && pnpm run doctor",
-    body: "Local Supabase runs in Docker. Doctor checks your setup and never prints a secret.",
-  },
-  {
-    title: "Build",
-    command: "pnpm dev",
-    body: "Follow the recipes in AGENTS.md, or let your coding agent follow them.",
-  },
-];
+// Agents that read AGENTS.md (Claude Code reads CLAUDE.md, which imports it).
+const agents = ["Claude Code", "Cursor", "Codex", "GitHub Copilot", "Windsurf", "Zed", "Cline"];
 
 const community = [
   "Design system, UI kit, light and dark themes",
@@ -65,62 +40,101 @@ const pro = [
 export default function HomePage() {
   return (
     <>
-      <Section className="grid items-center gap-12 pt-16 md:pt-24 lg:grid-cols-[1.15fr_1fr]">
-        <div className="space-y-7">
-          <p className="font-mono text-xs tracking-widest text-muted-foreground uppercase">
-            Open source · MIT
-          </p>
-          <h1 className="font-heading text-5xl leading-[0.95] font-light text-balance sm:text-6xl lg:text-7xl">
-            {siteConfig.tagline}
-          </h1>
-          <p className="max-w-xl text-lg text-pretty text-muted-foreground">
-            A Next.js and Supabase starter with a considered interface, consistent patterns and
-            setup checks, so you and your AI tools can extend it without guesswork.
-          </p>
-          <div className="flex flex-wrap gap-3">
+      {/* Hero: big headline, then the terminal typing the real CLI session */}
+      <section className="relative overflow-hidden">
+        <div
+          aria-hidden
+          className="bg-grid pointer-events-none absolute inset-0 [mask-image:radial-gradient(ellipse_at_top,black_20%,transparent_70%)] opacity-70"
+        />
+        <div className="relative mx-auto flex w-full max-w-6xl flex-col items-center px-4 pt-16 pb-20 text-center sm:px-6 md:pt-24">
+          <div className="animate-fade-up" style={{ animationDelay: "0ms" }}>
+            <Link
+              href="/features"
+              className="group inline-flex items-center gap-2 rounded-full border bg-card px-3 py-1 text-sm text-muted-foreground shadow-xs transition-colors hover:text-foreground"
+            >
+              <span className="rounded-full bg-accent px-2 py-0.5 text-xs font-semibold text-accent-foreground">
+                New
+              </span>
+              Stripe billing and an admin area
+              <ArrowRight
+                aria-hidden
+                className="size-3.5 transition-transform group-hover:translate-x-0.5"
+              />
+            </Link>
+          </div>
+          <div className="animate-fade-up" style={{ animationDelay: "80ms" }}>
+            <h1 className="mt-7 max-w-4xl font-heading text-5xl leading-[1.02] font-semibold tracking-tight text-balance sm:text-6xl lg:text-7xl">
+              {siteConfig.tagline}
+            </h1>
+          </div>
+          <div className="animate-fade-up" style={{ animationDelay: "160ms" }}>
+            <p className="mx-auto mt-6 max-w-2xl text-lg text-pretty text-muted-foreground sm:text-xl">
+              A Next.js and Supabase starter with a considered interface, consistent patterns and
+              setup checks, so you and your AI tools can extend it without guesswork.
+            </p>
+          </div>
+          <div
+            className="mt-9 flex animate-fade-up flex-wrap justify-center gap-3"
+            style={{ animationDelay: "240ms" }}
+          >
             <Button asChild size="lg">
               <Link href="/features">
-                See what&apos;s included <ArrowRight aria-hidden className="text-highlight" />
+                See what&apos;s included <ArrowRight aria-hidden />
               </Link>
             </Button>
             <Button asChild size="lg" variant="outline">
               <Link href="/signup">Create a free account</Link>
             </Button>
           </div>
+          <div
+            className="mt-14 w-full max-w-4xl animate-fade-up"
+            style={{ animationDelay: "320ms" }}
+          >
+            <AnimatedTerminal />
+          </div>
         </div>
-        <figure className="overflow-hidden rounded-md bg-instrument text-instrument-foreground shadow-lg">
-          <figcaption className="flex items-center gap-2 border-b border-white/10 px-4 py-2.5 font-mono text-xs text-instrument-muted">
-            <span className="size-2 rounded-full bg-highlight" aria-hidden />
-            terminal
-          </figcaption>
-          <pre tabIndex={0} className="overflow-x-auto p-5 font-mono text-[13px] leading-relaxed">
-            <code>
-              {terminal.map((line, i) => (
-                <span key={i} className={`block ${line.muted ? "text-instrument-muted" : ""}`}>
-                  {line.prompt && (
-                    <span className="text-highlight" aria-hidden>
-                      ${" "}
-                    </span>
-                  )}
-                  {line.text || " "}
-                </span>
-              ))}
-            </code>
-          </pre>
-        </figure>
+      </section>
+
+      <section aria-labelledby="agents-heading" className="border-y bg-subtle py-10">
+        <h2
+          id="agents-heading"
+          className="mb-6 text-center text-sm font-medium text-muted-foreground"
+        >
+          Ships with instructions your coding agent reads
+        </h2>
+        <Marquee items={agents} label="Coding agents that read AGENTS.md" />
+      </section>
+
+      <Section aria-labelledby="agent-heading">
+        <Reveal>
+          <SectionHeading
+            id="agent-heading"
+            eyebrow="Built for coding agents"
+            title="Ask for a feature. Get the pattern, the tests and green checks."
+            description="AGENTS.md gives your agent the rules and step-by-step recipes, so its changes look like the rest of the codebase."
+            center
+            className="mb-12"
+          />
+        </Reveal>
+        <Reveal delay={120} className="mx-auto max-w-5xl">
+          <AgentDemo />
+        </Reveal>
       </Section>
 
       <Section aria-labelledby="features-heading" className="pt-0 md:pt-0">
-        <SectionHeading
-          id="features-heading"
-          eyebrow="What's inside"
-          title="The foundation most SaaS products rebuild"
-          description="Each part follows one documented pattern, so changes stay predictable."
-          className="mb-12"
-        />
+        <Reveal>
+          <SectionHeading
+            id="features-heading"
+            eyebrow="What's inside"
+            title="The foundation most SaaS products rebuild"
+            description="Each part follows one documented pattern, so changes stay predictable."
+            center
+            className="mb-12"
+          />
+        </Reveal>
         <FeatureGrid features={coreFeatures.slice(0, 6)} />
-        <div className="mt-10">
-          <Button asChild variant="link" className="px-0">
+        <div className="mt-10 text-center">
+          <Button asChild variant="outline">
             <Link href="/features">
               All features and their status <ArrowRight aria-hidden />
             </Link>
@@ -128,108 +142,124 @@ export default function HomePage() {
         </div>
       </Section>
 
-      <div className="border-y bg-subtle">
-        <Section aria-labelledby="how-heading">
+      <Section aria-labelledby="how-heading" className="pt-0 md:pt-0">
+        <Reveal>
           <SectionHeading
             id="how-heading"
             eyebrow="How it works"
-            title="Three commands to your own app"
+            title="Scaffold, secure, ship"
+            center
+            className="mb-10"
+          />
+        </Reveal>
+        <Reveal delay={100}>
+          <ShowcaseTabs />
+        </Reveal>
+      </Section>
+
+      <Section aria-labelledby="stack-heading" className="pt-0 md:pt-0">
+        <Reveal>
+          <StackOrbit />
+        </Reveal>
+      </Section>
+
+      <Section aria-labelledby="editions-heading" className="pt-0 md:pt-0">
+        <Reveal>
+          <SectionHeading
+            id="editions-heading"
+            eyebrow="Editions"
+            title="Free to build with. Paid only if you want more."
+            center
             className="mb-12"
           />
-          <ol className="grid gap-10 md:grid-cols-3">
-            {steps.map((s) => (
-              <li key={s.title} className="space-y-3 border-t border-foreground/20 pt-5">
-                <h3 className="font-heading text-2xl font-normal">{s.title}</h3>
-                <p className="overflow-x-auto rounded-sm border bg-card px-3 py-2 font-mono text-[13px] whitespace-nowrap">
-                  <span className="text-muted-foreground" aria-hidden>
-                    ${" "}
-                  </span>
-                  {s.command}
-                </p>
-                <p className="text-sm leading-relaxed text-muted-foreground">{s.body}</p>
-              </li>
-            ))}
-          </ol>
-        </Section>
-      </div>
-
-      <Section aria-labelledby="editions-heading">
-        <SectionHeading
-          id="editions-heading"
-          eyebrow="Editions"
-          title="Free to build with. Paid only if you want more."
-          className="mb-12"
-        />
-        <div className="grid divide-y border-y md:grid-cols-2 md:divide-x md:divide-y-0">
-          <div className="space-y-4 py-8 md:pr-10">
-            <div className="flex items-baseline justify-between gap-4">
-              <h3 className="font-heading text-3xl font-normal">Community</h3>
-              <span className="font-mono text-xs tracking-widest text-muted-foreground uppercase">
-                MIT · free
+        </Reveal>
+        <div className="mx-auto grid max-w-5xl gap-5 md:grid-cols-2">
+          <Reveal className="space-y-5 rounded-3xl border bg-card p-8 shadow-xs">
+            <div className="flex items-center justify-between gap-4">
+              <h3 className="font-heading text-3xl font-semibold tracking-tight">Community</h3>
+              <span className="rounded-full bg-success/15 px-3 py-1 text-xs font-semibold text-success">
+                Free · MIT
               </span>
             </div>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground">
               Everything a basic SaaS needs, built to the same security and test bar.
             </p>
-            <ul className="space-y-2.5 text-sm">
+            <ul className="space-y-3">
               {community.map((f) => (
-                <li key={f} className="flex gap-2.5">
-                  <Check className="mt-0.5 size-4 shrink-0" strokeWidth={1.75} aria-hidden /> {f}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="space-y-4 py-8 md:pl-10">
-            <div className="flex items-baseline justify-between gap-4">
-              <h3 className="font-heading text-3xl font-normal">Pro</h3>
-              <span className="font-mono text-xs tracking-widest text-muted-foreground uppercase">
-                In development
-              </span>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              A commercial edition that adds depth on top of Community. Not on sale yet.
-            </p>
-            <ul className="space-y-2.5 text-sm text-muted-foreground">
-              {pro.map((f) => (
-                <li key={f} className="flex gap-2.5">
-                  <span aria-hidden className="w-4 text-center">
-                    +
+                <li key={f} className="flex gap-3">
+                  <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-accent text-accent-foreground">
+                    <Check className="size-3" strokeWidth={3} aria-hidden />
                   </span>
                   {f}
                 </li>
               ))}
             </ul>
-          </div>
+            <Button asChild className="w-full">
+              <Link href="/signup">Start free</Link>
+            </Button>
+          </Reveal>
+          <Reveal
+            delay={120}
+            className="relative space-y-5 overflow-hidden rounded-3xl border border-primary/30 bg-accent/40 p-8"
+          >
+            <div className="flex items-center justify-between gap-4">
+              <h3 className="font-heading text-3xl font-semibold tracking-tight">Pro</h3>
+              <span className="rounded-full bg-card px-3 py-1 text-xs font-semibold text-muted-foreground">
+                In development
+              </span>
+            </div>
+            <p className="text-muted-foreground">
+              A commercial edition that adds depth on top of Community. Not on sale yet.
+            </p>
+            <ul className="space-y-3">
+              {pro.map((f) => (
+                <li key={f} className="flex gap-3">
+                  <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-card text-accent-foreground">
+                    <Plus className="size-3" strokeWidth={3} aria-hidden />
+                  </span>
+                  {f}
+                </li>
+              ))}
+            </ul>
+          </Reveal>
         </div>
       </Section>
 
-      <section aria-labelledby="cta-heading" className="bg-instrument text-instrument-foreground">
-        <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-20 sm:px-6 md:flex-row md:items-end md:justify-between md:py-24">
-          <div className="max-w-2xl space-y-4">
+      <Section aria-labelledby="cta-heading" className="pt-0 md:pt-0">
+        <Reveal className="relative overflow-hidden rounded-[2rem] bg-instrument px-6 py-16 text-center text-instrument-foreground sm:px-12 md:py-24">
+          <div
+            aria-hidden
+            className="bg-grid pointer-events-none absolute inset-0 opacity-[0.07] [--color-border:white]"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -top-24 left-1/2 size-80 -translate-x-1/2 animate-float rounded-full bg-highlight/30 blur-3xl motion-reduce:animate-none"
+          />
+          <div className="relative mx-auto max-w-2xl space-y-6">
             <h2
               id="cta-heading"
-              className="font-heading text-4xl leading-none font-light text-balance sm:text-6xl"
+              className="font-heading text-4xl font-semibold tracking-tight text-balance sm:text-6xl"
             >
               Start from code you can read.
             </h2>
-            <p className="font-mono text-sm text-instrument-muted">
+            <p className="font-mono text-sm text-instrument-muted sm:text-base">
               <span className="text-highlight" aria-hidden>
                 ${" "}
               </span>
               npx create-agentlaunch my-app
             </p>
+            <Button
+              asChild
+              size="lg"
+              className="bg-highlight text-highlight-foreground hover:bg-highlight/90"
+            >
+              <Link href="/signup">
+                Get started <ArrowRight aria-hidden />
+              </Link>
+            </Button>
           </div>
-          <Button
-            asChild
-            size="lg"
-            className="bg-highlight text-highlight-foreground hover:bg-highlight/90"
-          >
-            <Link href="/signup">
-              Get started <ArrowRight aria-hidden />
-            </Link>
-          </Button>
-        </div>
-      </section>
+        </Reveal>
+      </Section>
     </>
   );
 }

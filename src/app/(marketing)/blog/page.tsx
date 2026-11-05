@@ -31,7 +31,7 @@ export default async function BlogIndexPage() {
                   <time dateTime={meta.date}>{formatPostDate(meta.date)}</time>
                   {meta.demo && <Badge variant="outline">Demo post</Badge>}
                 </div>
-                <h2 className="font-heading text-2xl font-normal">
+                <h2 className="font-heading text-2xl font-semibold tracking-tight">
                   <Link href={`/blog/${slug}`} className="underline-offset-4 hover:underline">
                     {meta.title}
                   </Link>

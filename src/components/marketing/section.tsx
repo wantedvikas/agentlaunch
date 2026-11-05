@@ -19,24 +19,23 @@ export function SectionHeading({
   title,
   description,
   id,
+  center = false,
   className,
 }: {
   eyebrow?: string;
   title: string;
   description?: string;
   id?: string;
+  /** Centre the heading block, Slite-style, for showcase sections. */
+  center?: boolean;
   className?: string;
 }) {
   return (
-    <div className={cn("max-w-2xl space-y-3", className)}>
-      {eyebrow && (
-        <p className="font-mono text-xs tracking-widest text-muted-foreground uppercase">
-          {eyebrow}
-        </p>
-      )}
+    <div className={cn("max-w-2xl space-y-4", center && "mx-auto text-center", className)}>
+      {eyebrow && <p className="text-sm font-semibold text-primary">{eyebrow}</p>}
       <h2
         id={id}
-        className="font-heading text-4xl leading-none font-light text-balance sm:text-5xl"
+        className="font-heading text-4xl leading-[1.05] font-semibold tracking-tight text-balance sm:text-5xl"
       >
         {title}
       </h2>

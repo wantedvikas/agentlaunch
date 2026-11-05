@@ -13,7 +13,7 @@ export function PlanCard({ children }: { children?: React.ReactNode }) {
       </CardHeader>
       <CardContent className="space-y-5">
         <p>
-          <span className="font-heading text-5xl font-light">{PLAN.price}</span>
+          <span className="font-heading text-5xl font-semibold tracking-tight">{PLAN.price}</span>
           <span className="text-muted-foreground"> / {PLAN.interval}</span>
         </p>
         <ul className="space-y-2 text-sm">

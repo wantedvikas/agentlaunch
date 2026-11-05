@@ -17,7 +17,7 @@ export function AuthCard({
     <div className="space-y-4">
       <Card className="shadow-sm">
         <CardHeader>
-          <h1 className="font-heading text-3xl font-normal">{title}</h1>
+          <h1 className="font-heading text-2xl font-semibold tracking-tight">{title}</h1>
           {description && <CardDescription>{description}</CardDescription>}
         </CardHeader>
         <CardContent className="grid gap-4">{children}</CardContent>

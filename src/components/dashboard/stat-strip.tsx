@@ -16,7 +16,9 @@ export function StatStrip({
           <dt className="font-mono text-[11px] tracking-widest text-muted-foreground uppercase">
             {s.label}
           </dt>
-          <dd className="font-heading text-4xl leading-none font-light tabular-nums">{s.value}</dd>
+          <dd className="font-heading text-4xl leading-[1.05] font-semibold tracking-tight tabular-nums">
+            {s.value}
+          </dd>
         </div>
       ))}
     </dl>

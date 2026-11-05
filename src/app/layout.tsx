@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Barlow, Barlow_Condensed, JetBrains_Mono } from "next/font/google";
+import { Bricolage_Grotesque, Figtree, Geist_Mono } from "next/font/google";
 
 // @module:analytics
 import { Analytics } from "@/components/analytics/analytics";
@@ -10,18 +10,10 @@ import { siteConfig } from "@/config/site";
 
 import "./globals.css";
 
-// Display headings: Barlow Condensed (light). Body: Barlow. Code: JetBrains Mono.
-const headingFont = Barlow_Condensed({
-  variable: "--font-heading-family",
-  subsets: ["latin"],
-  weight: ["300", "400", "500"],
-});
-const bodyFont = Barlow({
-  variable: "--font-body-family",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
-});
-const monoFont = JetBrains_Mono({ variable: "--font-mono-family", subsets: ["latin"] });
+// Headings: Bricolage Grotesque. Body: Figtree. Code: Geist Mono.
+const headingFont = Bricolage_Grotesque({ variable: "--font-heading-family", subsets: ["latin"] });
+const bodyFont = Figtree({ variable: "--font-body-family", subsets: ["latin"] });
+const monoFont = Geist_Mono({ variable: "--font-mono-family", subsets: ["latin"] });
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -47,8 +39,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f7f7f7" },
-    { media: "(prefers-color-scheme: dark)", color: "#1b1b1b" },
+    { media: "(prefers-color-scheme: light)", color: "#fcfaf6" },
+    { media: "(prefers-color-scheme: dark)", color: "#1f2126" },
   ],
 };
 
