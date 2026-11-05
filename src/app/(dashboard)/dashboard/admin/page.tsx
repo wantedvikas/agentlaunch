@@ -4,8 +4,9 @@ import Link from "next/link";
 import { Suspense } from "react";
 
 import { PageHeader } from "@/components/dashboard/page-header";
+import { StatStrip } from "@/components/dashboard/stat-strip";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { Input } from "@/components/ui/input";
 import { FormField } from "@/components/ui/form-field";
@@ -62,16 +63,7 @@ async function AdminContent({
   return (
     <div className="space-y-6">
       <section aria-label="Stats" className="space-y-2">
-        <div className="grid gap-4 sm:grid-cols-3">
-          {cards.map((c) => (
-            <Card key={c.label}>
-              <CardHeader>
-                <CardDescription>{c.label}</CardDescription>
-                <CardTitle className="text-2xl">{c.value}</CardTitle>
-              </CardHeader>
-            </Card>
-          ))}
-        </div>
+        <StatStrip label="Headline numbers" stats={cards} />
         <p className="text-xs text-muted-foreground">
           {stats
             ? `Updated ${new Date(stats.updated_at).toUTCString()}. Refreshed hourly by a database job.`

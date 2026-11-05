@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
+import { FeatureGrid } from "@/components/marketing/feature-grid";
 import { coreFeatures } from "@/components/marketing/features-data";
 import { Section, SectionHeading } from "@/components/marketing/section";
-import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableBody,
@@ -48,22 +48,7 @@ export default function FeaturesPage() {
       </Section>
 
       <Section className="pt-0 md:pt-0" aria-label="Feature list">
-        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {coreFeatures.map(({ icon: Icon, title, description, status }) => (
-            <li key={title} className="flex flex-col gap-3 rounded-xl border bg-card p-6">
-              <div className="flex items-center justify-between">
-                <span className="flex size-9 items-center justify-center rounded-lg bg-accent text-accent-foreground">
-                  <Icon className="size-4.5" aria-hidden />
-                </span>
-                <Badge variant={status === "ready" ? "success" : "outline"}>
-                  {status === "ready" ? "Ready" : "Planned"}
-                </Badge>
-              </div>
-              <h2 className="font-semibold">{title}</h2>
-              <p className="text-sm text-muted-foreground">{description}</p>
-            </li>
-          ))}
-        </ul>
+        <FeatureGrid features={coreFeatures} />
       </Section>
 
       <Section aria-labelledby="compare-heading">
@@ -98,12 +83,14 @@ export default function FeaturesPage() {
         <SectionHeading id="get-started" title="Get started locally" className="mb-6" />
         <pre
           tabIndex={0}
-          className="overflow-x-auto rounded-xl border bg-card p-5 font-mono text-sm leading-relaxed"
+          className="overflow-x-auto rounded-md bg-instrument p-5 font-mono text-sm leading-relaxed text-instrument-foreground"
         >
-          <code>{`pnpm install
+          <code>{`npx create-agentlaunch my-app
+cd my-app
 cp .env.example .env.local
-pnpm dev          # http://localhost:3000
-pnpm check        # lint, typecheck, tests, build`}</code>
+pnpm db:start          # local Supabase (Docker)
+pnpm run doctor        # checks setup, never prints secrets
+pnpm dev               # http://localhost:3000`}</code>
         </pre>
         <p className="mt-4 text-sm text-muted-foreground">
           Full setup instructions are in the repository README.

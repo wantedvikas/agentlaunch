@@ -30,9 +30,14 @@ export function SectionHeading({
   return (
     <div className={cn("max-w-2xl space-y-3", className)}>
       {eyebrow && (
-        <p className="text-sm font-medium tracking-wide text-primary uppercase">{eyebrow}</p>
+        <p className="font-mono text-xs tracking-widest text-muted-foreground uppercase">
+          {eyebrow}
+        </p>
       )}
-      <h2 id={id} className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
+      <h2
+        id={id}
+        className="font-heading text-4xl leading-none font-light text-balance sm:text-5xl"
+      >
         {title}
       </h2>
       {description && <p className="text-lg text-pretty text-muted-foreground">{description}</p>}

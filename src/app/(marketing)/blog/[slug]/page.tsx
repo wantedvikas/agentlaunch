@@ -38,7 +38,7 @@ export default async function BlogPostPage(props: PageProps<"/blog/[slug]">) {
         ← All posts
       </Link>
       <header className="mt-6 mb-8 space-y-3">
-        <h1 className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
+        <h1 className="font-heading text-5xl leading-none font-light text-balance sm:text-6xl">
           {meta.title}
         </h1>
         <p className="text-sm text-muted-foreground">

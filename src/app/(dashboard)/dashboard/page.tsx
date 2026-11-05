@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 
 import { PageHeader } from "@/components/dashboard/page-header";
+import { StatStrip } from "@/components/dashboard/stat-strip";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -47,6 +48,13 @@ async function Overview({
           </AlertDescription>
         </Alert>
       )}
+      <StatStrip
+        label="Projects by status"
+        stats={(Object.keys(counts) as (keyof typeof counts)[]).map((s) => ({
+          label: `${statusLabels[s]} projects`,
+          value: counts[s],
+        }))}
+      />
       {projects.length === 0 ? (
         <EmptyState
           icon={FolderKanban}
@@ -59,40 +67,29 @@ async function Overview({
           }
         />
       ) : (
-        <>
-          <dl className="grid gap-4 sm:grid-cols-3">
-            {(Object.keys(counts) as (keyof typeof counts)[]).map((s) => (
-              // dt/dd must be direct children of a div inside <dl>, so the Card is that div.
-              <Card key={s} className="p-5">
-                <dt className="text-sm text-muted-foreground">{statusLabels[s]} projects</dt>
-                <dd className="mt-1 text-2xl font-semibold tabular-nums">{counts[s]}</dd>
-              </Card>
-            ))}
-          </dl>
-          <Card>
-            <CardHeader className="flex-row items-center justify-between">
-              <div className="space-y-1">
-                <CardTitle>Recent projects</CardTitle>
-                <CardDescription>Your latest work.</CardDescription>
-              </div>
-              <Button asChild variant="ghost" size="sm">
-                <Link href="/dashboard/projects">
-                  View all <ArrowRight aria-hidden />
-                </Link>
-              </Button>
-            </CardHeader>
-            <CardContent>
-              <ul className="divide-y">
-                {projects.slice(0, 5).map((p) => (
-                  <li key={p.id} className="flex items-center justify-between gap-4 py-3">
-                    <span className="truncate font-medium">{p.name}</span>
-                    <Badge variant="outline">{statusLabels[p.status]}</Badge>
-                  </li>
-                ))}
-              </ul>
-            </CardContent>
-          </Card>
-        </>
+        <Card>
+          <CardHeader className="flex-row items-center justify-between">
+            <div className="space-y-1">
+              <CardTitle>Recent projects</CardTitle>
+              <CardDescription>Your latest work.</CardDescription>
+            </div>
+            <Button asChild variant="ghost" size="sm">
+              <Link href="/dashboard/projects">
+                View all <ArrowRight aria-hidden />
+              </Link>
+            </Button>
+          </CardHeader>
+          <CardContent>
+            <ul className="divide-y">
+              {projects.slice(0, 5).map((p) => (
+                <li key={p.id} className="flex items-center justify-between gap-4 py-3">
+                  <span className="truncate font-medium">{p.name}</span>
+                  <Badge variant="outline">{statusLabels[p.status]}</Badge>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
       )}
     </>
   );

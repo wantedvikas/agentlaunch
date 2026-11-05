@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Barlow, Barlow_Condensed, JetBrains_Mono } from "next/font/google";
 
 // @module:analytics
 import { Analytics } from "@/components/analytics/analytics";
@@ -10,8 +10,18 @@ import { siteConfig } from "@/config/site";
 
 import "./globals.css";
 
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+// Display headings: Barlow Condensed (light). Body: Barlow. Code: JetBrains Mono.
+const headingFont = Barlow_Condensed({
+  variable: "--font-heading-family",
+  subsets: ["latin"],
+  weight: ["300", "400", "500"],
+});
+const bodyFont = Barlow({
+  variable: "--font-body-family",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600"],
+});
+const monoFont = JetBrains_Mono({ variable: "--font-mono-family", subsets: ["latin"] });
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -37,8 +47,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#fbfcfd" },
-    { media: "(prefers-color-scheme: dark)", color: "#14171c" },
+    { media: "(prefers-color-scheme: light)", color: "#f7f7f7" },
+    { media: "(prefers-color-scheme: dark)", color: "#1b1b1b" },
   ],
 };
 
@@ -47,7 +57,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     // suppressHydrationWarning: the inline theme script sets class="dark" before React hydrates.
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable}`}
+      className={`${headingFont.variable} ${bodyFont.variable} ${monoFont.variable}`}
       suppressHydrationWarning
     >
       <head>

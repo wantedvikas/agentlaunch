@@ -13,13 +13,13 @@ export function PlanCard({ children }: { children?: React.ReactNode }) {
       </CardHeader>
       <CardContent className="space-y-5">
         <p>
-          <span className="text-3xl font-semibold tracking-tight">{PLAN.price}</span>
+          <span className="font-heading text-5xl font-light">{PLAN.price}</span>
           <span className="text-muted-foreground"> / {PLAN.interval}</span>
         </p>
         <ul className="space-y-2 text-sm">
           {PLAN.features.map((f) => (
             <li key={f} className="flex items-center gap-2">
-              <Check className="size-4 text-success" aria-hidden /> {f}
+              <Check className="size-4 shrink-0" strokeWidth={1.75} aria-hidden /> {f}
             </li>
           ))}
         </ul>

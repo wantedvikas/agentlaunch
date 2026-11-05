@@ -6,9 +6,28 @@ import {
   Palette,
   ShieldCheck,
   Stethoscope,
+  Terminal,
   TestTubes,
   Workflow,
 } from "lucide-react";
+// @module:email
+import { Mail } from "lucide-react";
+// @end:email
+// @module:blog
+import { Newspaper } from "lucide-react";
+// @end:blog
+// @module:uploads
+import { FileUp } from "lucide-react";
+// @end:uploads
+// @module:ai
+import { Sparkles } from "lucide-react";
+// @end:ai
+// @module:payments
+import { CreditCard } from "lucide-react";
+// @end:payments
+// @module:admin
+import { UserCog } from "lucide-react";
+// @end:admin
 
 import type { Feature } from "./feature-grid";
 
@@ -43,7 +62,7 @@ export const coreFeatures: readonly (Feature & { status: "ready" | "planned" })[
     icon: KeyRound,
     title: "Supabase authentication",
     description:
-      "Email sign-up with verification, password reset, optional Google OAuth and server-side session refresh.",
+      "Email sign-up with verification, password reset, optional Google, GitHub, Microsoft and Slack sign-in, and server-side session refresh.",
     status: "ready",
   },
   {
@@ -81,4 +100,63 @@ export const coreFeatures: readonly (Feature & { status: "ready" | "planned" })[
       "MIT licence, no proprietary runtime, no licence checks. Deploy anywhere Next.js runs.",
     status: "ready",
   },
+  {
+    icon: Terminal,
+    title: "npx create-agentlaunch",
+    description:
+      "A scaffolder that asks which sign-in providers and modules you want, and removes the rest from the code.",
+    status: "ready",
+  },
+  // @module:payments
+  {
+    icon: CreditCard,
+    title: "Stripe subscriptions",
+    description:
+      "Checkout, the Customer Portal and a signature-verified webhook that ignores duplicate events. Paid pages are checked on the server.",
+    status: "ready",
+  },
+  // @end:payments
+  // @module:admin
+  {
+    icon: UserCog,
+    title: "Admin area",
+    description:
+      "Users list with search and filters, plus hourly stats. Admin access is a database flag, checked by RLS.",
+    status: "ready",
+  },
+  // @end:admin
+  // @module:email
+  {
+    icon: Mail,
+    title: "Transactional email",
+    description: "Resend or any SMTP provider, with a welcome email that is sent exactly once.",
+    status: "ready",
+  },
+  // @end:email
+  // @module:blog
+  {
+    icon: Newspaper,
+    title: "MDX blog",
+    description: "Write posts as MDX files. Front matter is validated at build time.",
+    status: "ready",
+  },
+  // @end:blog
+  // @module:uploads
+  {
+    icon: FileUp,
+    title: "Private file uploads",
+    description:
+      "Per-user folders in Supabase Storage, type and size checks, and short-lived links.",
+    status: "ready",
+  },
+  // @end:uploads
+  // @module:ai
+  {
+    icon: Sparkles,
+    title: "AI assistant example",
+    description:
+      "Claude called from the server, rate-limited per user. Your API key never reaches the browser.",
+    status: "ready",
+  },
+  // @end:ai
 ];
