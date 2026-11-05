@@ -107,8 +107,10 @@ async function main() {
     const run = (cmd, args) =>
       spawnSync(cmd, args, { cwd: target, stdio: "inherit", shell: process.platform === "win32" });
     if (install) {
-      if (run("pnpm", ["install"]).status !== 0)
-        console.warn("! pnpm install failed; run it yourself.");
+      // Removing modules removes dependencies, so the lockfile must be rewritten. pnpm defaults to
+      // --frozen-lockfile when CI=true (GitHub Actions, many cloud dev boxes), which would refuse.
+      if (run("pnpm", ["install", "--no-frozen-lockfile"]).status !== 0)
+        console.warn("! pnpm install failed; run `pnpm install` yourself.");
       else run("pnpm", ["format"]);
     }
     if (!values["no-git"] && spawnSync("git", ["--version"]).status === 0) {
