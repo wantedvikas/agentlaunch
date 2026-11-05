@@ -23,6 +23,7 @@ All notable changes to AgentLaunch Community. Format: [Keep a Changelog](https:/
 
 ### Fixed
 
+- `pnpm build` failed on a fresh clone before Supabase was configured (found by the first GitHub Actions run). The config check now runs at request time, and an unconfigured app sends dashboard visitors to the login page's setup notice.
 - The Overview stats list had invalid `<dl>` structure, which screen readers announced incorrectly.
 - A success badge's text contrast was 4.48:1, below the AA minimum.
 

@@ -126,13 +126,13 @@ test("password reset by email", async ({ page }) => {
 
 test("social sign-in buttons start the provider's OAuth flow", async ({ page }) => {
   await page.goto("/login");
+  // Providers not listed in NEXT_PUBLIC_AUTH_PROVIDERS render no button.
+  await expect(page.getByRole("button", { name: "Continue with Google" })).toHaveCount(0);
+
   const authorize = page.waitForRequest((r) =>
     r.url().includes("/auth/v1/authorize?provider=github"),
   );
   await page.getByRole("button", { name: "Continue with GitHub" }).click();
   const url = new URL((await authorize).url());
   expect(url.searchParams.get("redirect_to")).toMatch(/\/auth\/callback\?next=%2Fdashboard$/);
-  // Providers not listed in NEXT_PUBLIC_AUTH_PROVIDERS render no button.
-  await page.goto("/login");
-  await expect(page.getByRole("button", { name: "Continue with Google" })).toHaveCount(0);
 });

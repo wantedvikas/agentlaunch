@@ -9,11 +9,11 @@ import { getSupabaseEnv } from "./env";
 
 /** Per-request server client. Create a new one for every request; never share it. */
 export async function createClient() {
+  // Request-time work: supabase-js reads the clock, and the config check below must not run
+  // during a build-time prerender (a fresh clone builds before .env.local exists).
+  await connection();
   const env = getSupabaseEnv();
   if (!env) throw new Error("Supabase is not configured. Copy .env.example to .env.local.");
-  // supabase-js reads the clock while loading the session; mark this as request-time work so
-  // Next doesn't try to include it in a prerender (Cache Components / runtime prefetch).
-  await connection();
   const cookieStore = await cookies();
 
   return createServerClient<Database>(env.url, env.key, {

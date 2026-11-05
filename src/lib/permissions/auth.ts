@@ -2,6 +2,7 @@ import "server-only";
 
 import { redirect } from "next/navigation";
 
+import { getSupabaseEnv } from "@/lib/supabase/env";
 import { createClient } from "@/lib/supabase/server";
 
 export type CurrentUser = { id: string; email: string };
@@ -12,6 +13,8 @@ export type CurrentUser = { id: string; email: string };
  * or writes user data; never rely on the proxy or hidden buttons for authorization.
  */
 export async function getCurrentUser(): Promise<CurrentUser | null> {
+  // Unconfigured = nobody can be signed in; callers redirect to /login, which explains setup.
+  if (!getSupabaseEnv()) return null;
   const supabase = await createClient();
   const { data, error } = await supabase.auth.getClaims();
   const claims = data?.claims;
