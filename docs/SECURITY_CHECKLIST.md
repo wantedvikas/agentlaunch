@@ -57,6 +57,28 @@ What the starter does, and what **you** must do before going live. ✅ = built i
 
 <!-- @end:ai -->
 
+<!-- @module:payments -->
+
+## Billing
+
+- [ ] `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` and `SUPABASE_SECRET_KEY` are server-only variables, never `NEXT_PUBLIC_*`; `pnpm run doctor` flags them if they are.
+- [ ] The webhook rejects requests whose signature doesn't verify (tested), and duplicate event ids are no-ops (tested).
+- [ ] Every paid page **and** action calls `hasActiveSubscription()` on the server; hiding a button is not a paywall.
+- [ ] Billing tables are read-only to users (RLS + grants, tested); only `billing_apply_event()` writes them.
+- [ ] Live keys are used only in production; development uses `sk_test_` keys.
+
+<!-- @end:payments -->
+
+<!-- @module:admin -->
+
+## Admin
+
+- [ ] Admins are set only in SQL (`profiles.is_admin`); clients have no column grant to change it (tested).
+- [ ] `/dashboard/admin` returns not-found for non-admins, and the admin SQL functions re-check `is_admin()` (tested).
+- [ ] Review who has `is_admin = true` before each release.
+
+<!-- @end:admin -->
+
 ## Privacy
 
 - ✅ Google Analytics loads only after consent; Plausible is cookieless; declining removes `_ga` cookies

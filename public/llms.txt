@@ -10,6 +10,7 @@ Rules for agents live in AGENTS.md at the repository root. Read it before changi
 - [Local Supabase](https://github.com/wantedvikas/agentlaunch/blob/main/docs/LOCAL_SUPABASE.md): local stack, migrations, seed, pgTAP
 - [Auth setup](https://github.com/wantedvikas/agentlaunch/blob/main/docs/AUTH_SETUP.md): email auth, social providers, callback, rate limits
 - [Email and analytics](https://github.com/wantedvikas/agentlaunch/blob/main/docs/EMAIL_AND_ANALYTICS.md): Resend/SMTP, welcome email, Plausible/GA, cookie consent
+- [Billing](https://github.com/wantedvikas/agentlaunch/blob/main/docs/BILLING.md): Stripe Checkout, Portal, verified idempotent webhook, paid-only pages
 - [Deploy](https://github.com/wantedvikas/agentlaunch/blob/main/docs/DEPLOY.md): Vercel, Docker, Railway, Fly
 - [Troubleshooting](https://github.com/wantedvikas/agentlaunch/blob/main/docs/TROUBLESHOOTING.md)
 - [Security checklist](https://github.com/wantedvikas/agentlaunch/blob/main/docs/SECURITY_CHECKLIST.md)
@@ -18,5 +19,7 @@ Rules for agents live in AGENTS.md at the repository root. Read it before changi
 ## Key files
 - src/lib/permissions/auth.ts: requireUser()/getCurrentUser(); call in every data path
 - src/features/projects/: reference feature (schema.ts, queries.ts, actions.ts, components/)
+- src/features/billing/: hasActiveSubscription(); call it in every paid page and action
+- src/features/admin/: requireAdmin(); admin flag lives in profiles.is_admin
 - supabase/migrations/: schema, grants and RLS; supabase/tests/: authorization tests
 - src/app/globals.css: design tokens

@@ -37,7 +37,7 @@ jobs:
           - { name: full, flags: "--providers github", e2e: true }
           - {
               name: minimal,
-              flags: "--no-email --no-analytics --no-blog --no-uploads --no-ai --no-docker",
+              flags: "--no-email --no-analytics --no-blog --no-uploads --no-ai --no-payments --no-admin --no-docker",
               e2e: true,
             }
           - { name: no-email, flags: "--no-email", e2e: false }
@@ -45,6 +45,8 @@ jobs:
           - { name: no-blog, flags: "--no-blog", e2e: false }
           - { name: no-uploads, flags: "--no-uploads", e2e: false }
           - { name: no-ai, flags: "--no-ai", e2e: false }
+          - { name: no-payments, flags: "--no-payments", e2e: false }
+          - { name: no-admin, flags: "--no-admin", e2e: false }
           - { name: no-docker, flags: "--no-docker", e2e: false }
     name: generate (${{ matrix.name }})
     defaults:

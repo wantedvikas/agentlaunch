@@ -12,6 +12,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: "monthly",
     priority: path === "/" ? 1 : 0.8,
   }));
+  // @module:payments
+  entries.push({ url: new URL("/pricing", siteConfig.url).toString(), priority: 0.8 });
+  // @end:payments
   // @module:blog
   entries.push({
     url: new URL("/blog", siteConfig.url).toString(),

@@ -1,6 +1,26 @@
 import { defineConfig, devices } from "@playwright/test";
+// @module:payments
+import { execFileSync } from "node:child_process";
+// @end:payments
 
 const PORT = Number(process.env.PORT ?? 3100);
+// @module:payments
+/** Test-only webhook secret. tests/e2e/billing.spec.ts signs fake Stripe events with the same value. */
+const E2E_WEBHOOK_SECRET = "whsec_e2e_local_test_only";
+/** The LOCAL stack's secret key, read at run time so it's never written to a file. */
+function localSecretKey() {
+  if (process.env.SUPABASE_SECRET_KEY) return process.env.SUPABASE_SECRET_KEY;
+  try {
+    const out = execFileSync("pnpm", ["exec", "supabase", "status", "-o", "env"], {
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "ignore"],
+    });
+    return out.match(/^SECRET_KEY="?([^"\n]+)"?$/m)?.[1] ?? "";
+  } catch {
+    return "";
+  }
+}
+// @end:payments
 
 export default defineConfig({
   testDir: "./tests/e2e",
@@ -38,6 +58,13 @@ export default defineConfig({
       EMAIL_FROM: "App <hello@example.local>",
       // @end:email
       NEXT_PUBLIC_AUTH_PROVIDERS: "github",
+      // @module:payments
+      // Never call real Stripe from tests, even if .env.local has keys (env beats .env.local).
+      STRIPE_SECRET_KEY: "",
+      STRIPE_PRICE_ID: "",
+      STRIPE_WEBHOOK_SECRET: E2E_WEBHOOK_SECRET,
+      SUPABASE_SECRET_KEY: localSecretKey(),
+      // @end:payments
       // @module:analytics
       NEXT_PUBLIC_GA_MEASUREMENT_ID: "G-TEST000000",
       // @end:analytics

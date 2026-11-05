@@ -48,6 +48,17 @@ Instructions for AI coding agents (Claude Code, Cursor, Codex, …) and humans. 
 - `src/features/ai/`: Server Action calling Claude; see `docs/AI.md`
 
 <!-- @end:ai -->
+<!-- @module:payments -->
+
+- `src/features/billing/` · `src/app/api/stripe/webhook/`: Stripe Checkout/Portal actions, the verified webhook, and `hasActiveSubscription()`, which every paid page and action must call on the server. See `docs/BILLING.md`
+
+<!-- @end:payments -->
+
+<!-- @module:admin -->
+
+- `src/features/admin/`: `requireAdmin()` (database flag `profiles.is_admin`), users list and stats. Admin SQL functions re-check `is_admin()` themselves
+
+<!-- @end:admin -->
 
 ## Rules
 
@@ -62,10 +73,10 @@ Instructions for AI coding agents (Claude Code, Cursor, Codex, …) and humans. 
 9. **Keep changes scoped.** No unrelated refactors or reformatting.
 10. **Authorize on the server, every time.** Every query and action calls `requireUser()` / `getCurrentUser()` and filters by `owner_id`. RLS is the backstop. The proxy redirect is UX, not security.
 11. **Schema changes only through migrations.** Every new table: `revoke all`, minimal grants, `enable row level security`, owner policies, a pgTAP test. Then `pnpm db:types`.
-12. **Never use the Supabase secret / service_role key** in this app, and never bypass RLS.
+12. **Never use the Supabase secret / service_role key** in code that runs for a user, and never bypass RLS. The one exception is a signature-verified, server-to-server webhook with no user session (the Stripe webhook, via `src/lib/supabase/service.ts`).
 13. **Forms** use `method="post"` plus React Hook Form, so a submit before hydration can't leak values into the URL.
 14. **Request-time data** (anything reading the session) goes inside `<Suspense>`; see Next.js notes below.
-15. **Template repository only:** optional-module code (email, analytics, Docker) is wrapped in `@module:<id>` / `@end:<id>` comments used by the `create-agentlaunch` installer. Keep new code for those features inside the markers, and never put a marker in the middle of a statement or before a closing brace.
+15. **Template repository only:** optional-module code (email, analytics, blog, uploads, AI, payments, admin, Docker) is wrapped in `@module:<id>` / `@end:<id>` comments used by the `create-agentlaunch` installer. Keep new code for those features inside the markers, and never put a marker in the middle of a statement or before a closing brace.
 
 ## Recipe 1: Add an RLS-protected table
 

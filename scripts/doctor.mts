@@ -15,7 +15,15 @@ type Fetch = (url: string, init?: RequestInit) => Promise<Response>;
 const PROVIDERS = ["google", "github", "azure", "slack_oidc"];
 // Objects created by migrations. Add your newest table or function here so doctor can tell when
 // a database is behind (see AGENTS.md Recipe 1). Probes never read or write data.
-const TABLE_PROBES = ["projects"];
+const TABLE_PROBES = [
+  "projects",
+  // @module:payments
+  "billing_subscriptions",
+  // @end:payments
+  // @module:admin
+  "daily_stats",
+  // @end:admin
+];
 const RPC_PROBES: string[] = [
   // @module:email
   "claim_welcome_email",
@@ -38,8 +46,7 @@ function isHttpUrl(v: string | undefined) {
 /** True if a value looks like a key that must never be public (secret / service_role). */
 export function looksSecret(v: string | undefined) {
   if (!v) return false;
-  if (v.startsWith("sb_secret_") || v.startsWith("sk-ant-") || v.startsWith("sk_live_"))
-    return true;
+  if (/^(sb_secret_|sk-ant-|sk_live_|sk_test_|rk_live_|rk_test_|whsec_)/.test(v)) return true;
   const payload = v.split(".")[1];
   if (!payload) return false;
   try {
@@ -131,6 +138,32 @@ export function checkEnv(env: Env, hasEnvFile: boolean): Check[] {
     );
   else out.push(fail("EMAIL_TRANSPORT", "must be resend, smtp or log"));
   // @end:email
+
+  // @module:payments
+  const stripeKey = env.STRIPE_SECRET_KEY;
+  if (!stripeKey)
+    out.push(warn("STRIPE_SECRET_KEY", "not set (billing pages show it isn't configured)"));
+  else if (!/^(sk|rk)_(test|live)_/.test(stripeKey))
+    out.push(fail("STRIPE_SECRET_KEY", "doesn't look like a Stripe secret key (sk_test_…)"));
+  else {
+    out.push(
+      stripeKey.includes("_live_")
+        ? warn("STRIPE_SECRET_KEY", "LIVE key: real charges. Use a test key while developing")
+        : ok("STRIPE_SECRET_KEY", "test-mode key set"),
+    );
+    if (!env.STRIPE_PRICE_ID?.startsWith("price_"))
+      out.push(fail("STRIPE_PRICE_ID", "missing or not a price id (price_…)"));
+  }
+  if (stripeKey && !env.STRIPE_WEBHOOK_SECRET?.startsWith("whsec_"))
+    out.push(
+      fail("STRIPE_WEBHOOK_SECRET", "missing or not whsec_…; subscriptions will never activate"),
+    );
+  const serviceKey = env.SUPABASE_SECRET_KEY;
+  if (stripeKey && !serviceKey)
+    out.push(fail("SUPABASE_SECRET_KEY", "missing; the webhook can't record subscriptions"));
+  else if (serviceKey && !looksSecret(serviceKey))
+    out.push(fail("SUPABASE_SECRET_KEY", "this is not a secret key (sb_secret_… / service_role)"));
+  // @end:payments
 
   // @module:ai
   if (!env.ANTHROPIC_API_KEY)

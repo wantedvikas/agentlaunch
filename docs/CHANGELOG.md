@@ -2,6 +2,33 @@
 
 All notable changes to AgentLaunch Community. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: SemVer.
 
+## [Unreleased] (milestone C6)
+
+### Added
+
+- **Stripe billing (basic)**:
+  - **Plan and pages:** one subscription plan. `/pricing` shows it, and `/dashboard/billing` covers Checkout, the Customer Portal and the status.
+  - **Paid-only example:** `/dashboard/premium` with a CSV export that is checked on the server.
+  - **Webhook:** `POST /api/stripe/webhook` verifies the signature over the raw body, and `billing_apply_event()` applies each event in one transaction. Duplicate event ids are no-ops, and an older event never overwrites a newer state.
+  - **Tables:** `billing_customers`, `billing_subscriptions` and `billing_events`. Users can only read their own rows (RLS).
+  - **No new dependency:** Stripe is called over its REST API with `fetch`.
+  - **Guide:** `docs/BILLING.md`.
+- **Basic admin**:
+  - **Access:** `profiles.is_admin` (set in SQL only), `is_admin()` and `requireAdmin()`. `/dashboard/admin` returns not-found for anyone else.
+  - **Users:** a list with search and All / Paying / Admins filters (`admin_list_users()`).
+  - **Stats:** headline numbers (users, paying users, revenue) in `daily_stats`, refreshed hourly by pg_cron or on demand by an admin.
+  - **Seed data:** a local admin account.
+- **CLI modules:** `payments` and `admin` (`--no-payments`, `--no-admin`). The CI matrix now builds 10 variants.
+- **`pnpm run doctor`** checks the Stripe key, price and webhook secret, and that `SUPABASE_SECRET_KEY` is set. It also flags `sk_test_`, `rk_` and `whsec_` values in public variables.
+
+### Verified
+
+- A real Stripe test-mode run worked end to end: Checkout, then the signed webhook, then paid access, then the Portal cancellation, then immediate cancellation, which locks the page. The run caught that current Stripe API versions schedule a cancellation with `cancel_at` rather than `cancel_at_period_end`; both are handled now.
+
+### Changed
+
+- AGENTS.md rule 12 now allows the Supabase secret key in exactly one place: the signature-verified Stripe webhook.
+
 ## [0.3.0] — 2026-11-06 (milestone C5)
 
 ### Added

@@ -1,18 +1,28 @@
 "use client";
 
-import { FileUp, FolderKanban, LayoutDashboard, Settings, Sparkles } from "lucide-react";
+import {
+  CreditCard,
+  FileUp,
+  FolderKanban,
+  Gem,
+  LayoutDashboard,
+  Settings,
+  Sparkles,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 
-// Icons for every nav item the template can include (optional modules add "files" and "ai").
+// Icons for every nav item the template can include (optional modules add files, ai, premium, billing).
 const icons = {
   overview: LayoutDashboard,
   projects: FolderKanban,
   files: FileUp,
   ai: Sparkles,
+  premium: Gem,
+  billing: CreditCard,
   settings: Settings,
 } as const;
 

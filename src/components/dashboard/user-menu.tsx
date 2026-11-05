@@ -1,6 +1,6 @@
 "use client";
 
-import { LogOut, Settings } from "lucide-react";
+import { LogOut, Settings, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -15,7 +15,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { signOut } from "@/features/auth/actions";
 
-export function UserMenu({ email, displayName }: { email: string; displayName: string }) {
+export function UserMenu({
+  email,
+  displayName,
+  isAdmin = false,
+}: {
+  email: string;
+  displayName: string;
+  isAdmin?: boolean;
+}) {
   const initial = (displayName || email || "?").charAt(0).toUpperCase();
   return (
     <DropdownMenu>
@@ -39,6 +47,13 @@ export function UserMenu({ email, displayName }: { email: string; displayName: s
             <Settings aria-hidden /> Settings
           </Link>
         </DropdownMenuItem>
+        {isAdmin && (
+          <DropdownMenuItem asChild>
+            <Link href="/dashboard/admin">
+              <ShieldCheck aria-hidden /> Admin
+            </Link>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem onSelect={() => void signOut()}>
           <LogOut aria-hidden /> Sign out
         </DropdownMenuItem>

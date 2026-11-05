@@ -3,8 +3,26 @@ import { expect, test, type Page } from "@playwright/test";
 
 import { DEMO_STATE, preConsent } from "./helpers";
 
-const PUBLIC = ["/", "/features", "/login", "/signup", "/reset-password", "/does-not-exist"];
-const APP = ["/dashboard", "/dashboard/projects", "/dashboard/settings"];
+const PUBLIC = [
+  "/",
+  "/features",
+  // @module:payments
+  "/pricing",
+  // @end:payments
+  "/login",
+  "/signup",
+  "/reset-password",
+  "/does-not-exist",
+];
+const APP = [
+  "/dashboard",
+  "/dashboard/projects",
+  // @module:payments
+  "/dashboard/billing",
+  "/dashboard/premium",
+  // @end:payments
+  "/dashboard/settings",
+];
 
 /** Fails on serious/critical WCAG 2.1 A/AA violations, listing rule ids and selectors. */
 async function audit(page: Page, path: string, theme: "light" | "dark") {

@@ -24,6 +24,8 @@ Options:
   --no-blog               Leave out the MDX blog
   --no-uploads            Leave out file uploads
   --no-ai                 Leave out the AI assistant example
+  --no-payments           Leave out Stripe billing
+  --no-admin              Leave out the basic admin area
   --no-docker             Leave out the Dockerfile
   --no-install            Don't run pnpm install
   --no-git                Don't create a git repository
@@ -43,6 +45,8 @@ async function main() {
       "no-blog": { type: "boolean" },
       "no-uploads": { type: "boolean" },
       "no-ai": { type: "boolean" },
+      "no-payments": { type: "boolean" },
+      "no-admin": { type: "boolean" },
       "no-docker": { type: "boolean" },
       "no-install": { type: "boolean" },
       "no-git": { type: "boolean" },

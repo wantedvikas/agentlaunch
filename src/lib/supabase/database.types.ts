@@ -23,12 +23,122 @@ export type Database = {
   };
   public: {
     Tables: {
+      billing_customers: {
+        Row: {
+          created_at: string;
+          stripe_customer_id: string;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          created_at?: string;
+          stripe_customer_id: string;
+          user_id: string;
+        };
+        Update: {
+          created_at?: string;
+          stripe_customer_id?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
+      billing_events: {
+        Row: {
+          amount_cents: number | null;
+          created_at: string;
+          currency: string | null;
+          id: string;
+          stripe_customer_id: string | null;
+          type: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          amount_cents?: number | null;
+          created_at?: string;
+          currency?: string | null;
+          id: string;
+          stripe_customer_id?: string | null;
+          type: string;
+        };
+        Update: {
+          amount_cents?: number | null;
+          created_at?: string;
+          currency?: string | null;
+          id?: string;
+          stripe_customer_id?: string | null;
+          type?: string;
+        };
+        Relationships: [];
+      };
+      billing_subscriptions: {
+        Row: {
+          cancel_at_period_end: boolean;
+          current_period_end: string | null;
+          event_created: string;
+          id: string;
+          price_id: string | null;
+          status: string;
+          stripe_customer_id: string;
+          updated_at: string;
+          user_id: string;
+        };
+        ComputedFields: never;
+        Insert: {
+          cancel_at_period_end?: boolean;
+          current_period_end?: string | null;
+          event_created: string;
+          id: string;
+          price_id?: string | null;
+          status: string;
+          stripe_customer_id: string;
+          updated_at?: string;
+          user_id: string;
+        };
+        Update: {
+          cancel_at_period_end?: boolean;
+          current_period_end?: string | null;
+          event_created?: string;
+          id?: string;
+          price_id?: string | null;
+          status?: string;
+          stripe_customer_id?: string;
+          updated_at?: string;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
+      daily_stats: {
+        Row: {
+          day: string;
+          paying_users: number;
+          revenue_cents: number;
+          updated_at: string;
+          users: number;
+        };
+        ComputedFields: never;
+        Insert: {
+          day: string;
+          paying_users: number;
+          revenue_cents: number;
+          updated_at?: string;
+          users: number;
+        };
+        Update: {
+          day?: string;
+          paying_users?: number;
+          revenue_cents?: number;
+          updated_at?: string;
+          users?: number;
+        };
+        Relationships: [];
+      };
       profiles: {
         Row: {
           avatar_url: string | null;
           created_at: string;
           display_name: string | null;
           id: string;
+          is_admin: boolean;
           updated_at: string;
           welcomed_at: string | null;
         };
@@ -38,6 +148,7 @@ export type Database = {
           created_at?: string;
           display_name?: string | null;
           id: string;
+          is_admin?: boolean;
           updated_at?: string;
           welcomed_at?: string | null;
         };
@@ -46,6 +157,7 @@ export type Database = {
           created_at?: string;
           display_name?: string | null;
           id?: string;
+          is_admin?: boolean;
           updated_at?: string;
           welcomed_at?: string | null;
         };
@@ -87,7 +199,24 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      admin_list_users: {
+        Args: { p_filter?: string; p_search?: string };
+        Returns: {
+          created_at: string;
+          display_name: string;
+          email: string;
+          id: string;
+          is_admin: boolean;
+          is_paying: boolean;
+        }[];
+      };
+      billing_apply_event: {
+        Args: { p_data: Json; p_event_id: string; p_type: string };
+        Returns: boolean;
+      };
       claim_welcome_email: { Args: Record<PropertyKey, never>; Returns: boolean };
+      is_admin: { Args: Record<PropertyKey, never>; Returns: boolean };
+      refresh_daily_stats: { Args: Record<PropertyKey, never>; Returns: undefined };
     };
     Enums: {
       project_status: "active" | "paused" | "archived";

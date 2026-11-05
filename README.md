@@ -97,12 +97,12 @@ docs/                  feature matrix, changelog, test results, screenshots
 - **Rename the app:** edit `src/config/site.ts`.
 - **Change the look:** edit the tokens in `src/app/globals.css`. Each token has a light value and a `.dark` value.
 - **Environment:** see `.env.example`. The two Supabase variables are required.
-- **Guides:** [Auth and social sign-in](docs/AUTH_SETUP.md) · [Local Supabase](docs/LOCAL_SUPABASE.md) · [Email and analytics](docs/EMAIL_AND_ANALYTICS.md) · [Deploy](docs/DEPLOY.md) · [Troubleshooting](docs/TROUBLESHOOTING.md) · [Security checklist](docs/SECURITY_CHECKLIST.md)
+- **Guides:** [Auth and social sign-in](docs/AUTH_SETUP.md) · [Local Supabase](docs/LOCAL_SUPABASE.md) · [Email and analytics](docs/EMAIL_AND_ANALYTICS.md) · [Billing](docs/BILLING.md) · [Deploy](docs/DEPLOY.md) · [Troubleshooting](docs/TROUBLESHOOTING.md) · [Security checklist](docs/SECURITY_CHECKLIST.md)
 - **Working with an AI agent:** point it at [AGENTS.md](AGENTS.md). Claude Code also picks up the skills in `.claude/skills/`, and Cursor the rules in `.cursor/rules/`.
 
 ## Community vs Pro
 
-Pro is a commercial edition **in development and not for sale yet**. It is planned to add Stripe billing, email, a blog, file uploads and premium layouts. Community stays fully usable on its own. See [docs/FEATURE_MATRIX.md](docs/FEATURE_MATRIX.md).
+Pro is a commercial edition **in development and not for sale yet**. It is planned to add billing depth (one-time payments, tiers, trials, more providers), admin roles, AI credits, teams and premium layouts. Community stays fully usable on its own. See [docs/FEATURE_MATRIX.md](docs/FEATURE_MATRIX.md).
 
 ## Contributing and security
 

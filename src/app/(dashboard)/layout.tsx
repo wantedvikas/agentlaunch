@@ -8,6 +8,9 @@ import { Logo } from "@/components/marketing/logo";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { UserMenu } from "@/components/dashboard/user-menu";
 import { Skeleton } from "@/components/ui/skeleton";
+// @module:admin
+import { isAdmin } from "@/features/admin/queries";
+// @end:admin
 import { getProfile } from "@/features/profile/queries";
 
 export const metadata: Metadata = { robots: { index: false, follow: false } };
@@ -51,5 +54,13 @@ export default function DashboardLayout({ children }: LayoutProps<"/">) {
 /** Reads the session, so it streams in behind Suspense instead of blocking the layout. */
 async function HeaderUser() {
   const profile = await getProfile();
-  return <UserMenu email={profile.email} displayName={profile.displayName} />;
+  return (
+    <UserMenu
+      email={profile.email}
+      displayName={profile.displayName}
+      // @module:admin
+      isAdmin={await isAdmin()}
+      // @end:admin
+    />
+  );
 }

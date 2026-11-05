@@ -2,6 +2,70 @@
 
 Results exactly as they ran. Newest milestone first.
 
+## C6 — 2026-11-05 (local, macOS arm64, Node 22.23.3, pnpm 12.16.1, Supabase CLI 3.0.0)
+
+| Check                                                                                             | Result                             |
+| ------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| Template: format, lint (0 warnings), typecheck, build                                             | ✅                                 |
+| Template: unit                                                                                    | ✅ 90 passed                       |
+| Template: pgTAP                                                                                   | ✅ 67/67 (5 files)                 |
+| Template: E2E (desktop + mobile, axe at both widths)                                              | ✅ 63 passed, 36 skipped by design |
+| Template: doctor                                                                                  | ✅                                 |
+| CLI unit                                                                                          | ✅ 12/12                           |
+| Generated **full** app (`--providers github`): static, unit 90, pgTAP 67, doctor, E2E 63          | ✅                                 |
+| Generated **minimal** app (all 8 optional modules off): static, unit 52, pgTAP 22, doctor, E2E 41 | ✅                                 |
+| Generated `--no-payments` / `--no-admin`: format, lint, typecheck, unit (80 / 90), build          | ✅                                 |
+
+**New coverage:**
+
+- **Billing pgTAP:**
+  - Event handling: an event is applied once; a duplicate event id is a no-op; a stale event can't overwrite newer state; a subscription is found through its customer id; an unknown customer is ignored; the invoice amount is recorded.
+  - Access: users read only their own rows; they can't insert or update subscriptions, call `billing_apply_event` or read the event log; anon is denied.
+- **Admin pgTAP:**
+  - The stats job is scheduled.
+  - A regular user can't list users, refresh or read stats, see other profiles, or set `is_admin`.
+  - An admin can search users, filter to admins, read all profiles and refresh stats; anon is denied.
+- **Unit:**
+  - Webhook signatures: valid, wrong secret, changed body, garbage header, a replay outside 5 minutes, and multiple `v1` values.
+  - Events: mapping for each handled type (including the period end on newer API versions); envelope validation.
+  - Other: CSV quoting and formula neutralising; doctor checks for Stripe and the secret key.
+- **E2E:**
+  - Webhook signatures: an unsigned or wrongly signed webhook returns 400.
+  - Access over time: a signed subscription event unlocks `/dashboard/premium`, and the CSV downloads; resending it reports `duplicate`; the user's RLS read sees only their own rows; a cancellation makes the still-open export action fail on the server and locks the page.
+  - "Not configured" state: without Stripe keys the billing page says so and shows no Subscribe button.
+  - Admin access: a non-admin gets not-found and no Admin menu item; an admin sees stats, searches, filters and refreshes; the axe suite covers `/pricing`, `/dashboard/billing` and `/dashboard/premium`.
+
+**Found and fixed by these checks:**
+
+- **Sign-up limit:** the billing test's extra sign-up exceeded the per-IP sign-up limit, so it now uses the seeded demo user with fresh ids.
+- **Duplicate toast text:** the toast's live-region copy made a text locator ambiguous.
+- **Nested markers:** module markers ended up nested inside the `ai` block in AGENTS.md (the CLI rejected them).
+
+**Documented behaviour:** `/dashboard/admin` for a non-admin renders the not-found page with HTTP 200 plus noindex. That's the same Next 16 streaming behaviour as unknown blog slugs.
+
+### Real Stripe test-mode run (2026-11-05, Stripe Sandbox, API version `2026-10-28`, Stripe CLI `stripe listen`)
+
+| Step                                                                                                                                                                                                                  | Result       |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
+| Subscribe → hosted Checkout (`cs_test_`) → test card 4242 → back to `/dashboard/billing?checkout=success`                                                                                                             | ✅           |
+| Real Stripe-signed `checkout.session.completed`, `customer.subscription.created` and `invoice.paid` verified and applied (forwarded with `stripe events resend`, because the listener wasn't running at payment time) | ✅           |
+| Plan shows **active · Renews on Dec 5, 2026**; `/dashboard/premium` unlocked; CSV export works; `invoice.paid` recorded $9.00                                                                                         | ✅           |
+| The same event resent: still one event row and one subscription (duplicate ignored)                                                                                                                                   | ✅           |
+| Customer Portal opens for the user's own customer; cancel at period end → **active · Ends on Dec 5, 2026**                                                                                                            | ✅ after fix |
+| Cancel immediately (`stripe subscriptions cancel`) → `customer.subscription.deleted` → status `canceled`, the paid page locks, Subscribe is offered again                                                             | ✅           |
+
+**Found and fixed by the real run:**
+
+- **Scheduled cancellation missed:** on Stripe's current API version, a cancellation scheduled in the Portal sets `cancel_at` and leaves `cancel_at_period_end` as `false`, so the app said "Renews on". The webhook mapping now treats `cancel_at` as "ends on that date" (unit-tested).
+- **Wrong wording when canceled:** a canceled plan still showed "Renews on …". The date now only shows while the plan is active.
+- **Real keys reached the test server:** the browser tests picked up the real Stripe keys from `.env.local`. The test server now always runs with them blank, so tests never call Stripe.
+
+After the fixes: unit 91 passed, E2E 63 passed / 36 skipped, lint and typecheck clean.
+
+### Not run in C6
+
+- **A scheduled pg_cron run:** the job's registration is tested, and the function it calls is tested directly.
+
 ## C5 — 2026-11-06 (local, macOS arm64, Node 22.23.3, pnpm 12.16.1, Supabase CLI 3.0.0 with Storage)
 
 | Check                                                                                                      | Result                             |

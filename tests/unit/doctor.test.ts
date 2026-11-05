@@ -71,6 +71,27 @@ describe("checkEnv", () => {
     ).toEqual([]);
   });
   // @end:email
+  // @module:payments
+  it("checks Stripe keys and the webhook's requirements", () => {
+    const stripe = {
+      ...good,
+      STRIPE_SECRET_KEY: "sk_test_x",
+      STRIPE_PRICE_ID: "price_1",
+      STRIPE_WEBHOOK_SECRET: "whsec_1",
+      SUPABASE_SECRET_KEY: "sb_secret_1",
+    };
+    expect(failures(checkEnv(stripe, true))).toEqual([]);
+    expect(
+      failures(checkEnv({ ...stripe, STRIPE_WEBHOOK_SECRET: "", SUPABASE_SECRET_KEY: "" }, true)),
+    ).toEqual(["STRIPE_WEBHOOK_SECRET", "SUPABASE_SECRET_KEY"]);
+    expect(
+      failures(checkEnv({ ...stripe, SUPABASE_SECRET_KEY: "sb_publishable_1" }, true)),
+    ).toEqual(["SUPABASE_SECRET_KEY"]);
+    expect(failures(checkEnv({ ...good, NEXT_PUBLIC_STRIPE: "sk_test_x" }, true))).toEqual([
+      "NEXT_PUBLIC_STRIPE",
+    ]);
+  });
+  // @end:payments
   it("rejects malformed analytics ids", () => {
     expect(failures(checkEnv({ ...good, NEXT_PUBLIC_GA_MEASUREMENT_ID: "UA-1" }, true))).toEqual([
       "NEXT_PUBLIC_GA_MEASUREMENT_ID",

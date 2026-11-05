@@ -14,6 +14,9 @@ export const siteConfig = {
   contactEmail: process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? "",
   marketingNav: [
     { title: "Features", href: "/features" },
+    // @module:payments
+    { title: "Pricing", href: "/pricing" },
+    // @end:payments
     // @module:blog
     { title: "Blog", href: "/blog" },
     // @end:blog
@@ -28,6 +31,10 @@ export const siteConfig = {
     // @module:ai
     { title: "AI assistant", href: "/dashboard/ai", icon: "ai" },
     // @end:ai
+    // @module:payments
+    { title: "Premium", href: "/dashboard/premium", icon: "premium" },
+    { title: "Billing", href: "/dashboard/billing", icon: "billing" },
+    // @end:payments
     { title: "Settings", href: "/dashboard/settings", icon: "settings" },
   ],
 } as const;
