@@ -2,7 +2,7 @@
 
 All notable changes to AgentLaunch Community. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: SemVer.
 
-## [Unreleased] (milestone C6)
+## [0.4.0] — 2026-11-05 (milestone C6 + redesign)
 
 ### Added
 
@@ -27,6 +27,11 @@ All notable changes to AgentLaunch Community. Format: [Keep a Changelog](https:/
 
 ### Changed
 
+- **New look:** ink-on-paper design tokens with a single amber highlight and a teal focus ring. Barlow Condensed for display headings, Barlow for body text and JetBrains Mono for code and labels.
+- **Pages:**
+  - **Home:** a terminal hero showing the real CLI, a hairline-ruled feature list, "three commands" steps, a ruled editions comparison with up-to-date lists, and a dark closing call to action.
+  - **Dashboard:** a stat strip on the overview and admin pages, plus tighter cards.
+- **Accessibility:** passes axe in light and dark, at desktop and mobile widths.
 - AGENTS.md rule 12 now allows the Supabase secret key in exactly one place: the signature-verified Stripe webhook.
 
 ## [0.3.0] — 2026-11-06 (milestone C5)

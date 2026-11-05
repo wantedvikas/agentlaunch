@@ -1,6 +1,6 @@
 {
   "name": "create-agentlaunch",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Create a new AgentLaunch app (Next.js + Supabase SaaS starter) with only the parts you choose.",
   "license": "MIT",
   "type": "module",
