@@ -1,0 +1,25 @@
+{
+  "name": "create-agentlaunch",
+  "version": "0.2.0",
+  "description": "Create a new AgentLaunch app (Next.js + Supabase SaaS starter) with only the parts you choose.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "create-agentlaunch": "index.mjs"
+  },
+  "files": [
+    "index.mjs",
+    "lib/"
+  ],
+  "engines": {
+    "node": ">=22.18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wantedvikas/agentlaunch.git",
+    "directory": "packages/create-agentlaunch"
+  },
+  "scripts": {
+    "test": "node --test"
+  }
+}

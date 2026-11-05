@@ -2,7 +2,20 @@
 
 All notable changes to AgentLaunch Community. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: SemVer.
 
-## [Unreleased] — 0.1.0 release candidate
+## [0.2.0] — 2026-11-05 (milestone C4)
+
+### Added
+
+- `create-agentlaunch` CLI (`packages/create-agentlaunch`): `npx create-agentlaunch my-app` asks for an app name, social sign-in providers, and the email, analytics and Docker modules, then downloads the template at the matching release tag, removes unchosen modules (files, marked code blocks, migrations, tests, npm dependencies) and template-repo files, renames the project (package, app name, Supabase project id), writes a project README, installs, formats and makes an initial git commit. `--yes` plus flags for non-interactive use. No runtime dependencies.
+- `@module:<id>` / `@end:<id>` markers in shared template files; the CLI fails if any are unbalanced or left over.
+- CLI workflow: unit tests plus a generation matrix (full, minimal, no-email, no-analytics, no-docker), each running format, lint, typecheck, unit and build; full and minimal also run pgTAP, doctor and E2E.
+
+### Changed
+
+- `pnpm run doctor` probes migrations through `TABLE_PROBES` / `RPC_PROBES` lists, so a project without a module isn't reported as "behind".
+- The welcome-email E2E assertion uses `siteConfig.name`, so it passes after an app is renamed.
+
+## [0.1.0] — 2026-11-05 (milestones C1–C3)
 
 ### Added (milestone C3)
 

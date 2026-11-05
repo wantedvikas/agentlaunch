@@ -19,6 +19,14 @@
 - [ ] No Pro code, private notes or credentials in the repo or its history (`git log -p | grep -iE "sk_live|sb_secret_|service_role"`)
 - [ ] `LICENSE` copyright holder is correct
 
+## CLI (`packages/create-agentlaunch`)
+
+- [ ] The CLI workflow is green (unit tests + every generated variant)
+- [ ] `packages/create-agentlaunch/package.json` version = the release version (the CLI downloads tag `v<version>`)
+- [ ] Push the git tag **before** `npm publish`, or fresh installs will 404
+- [ ] `cd packages/create-agentlaunch && npm publish` (needs npm login with 2FA)
+- [ ] Smoke test: `npx create-agentlaunch@latest smoke --yes` in an empty folder
+
 ## Publish
 
 - [ ] `package.json` version bumped; `git tag vX.Y.Z && git push --tags`

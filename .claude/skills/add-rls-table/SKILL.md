@@ -10,4 +10,4 @@ Follow **AGENTS.md → Recipe 1: Add an RLS-protected table** exactly. Done mean
 - [ ] RLS enabled and four owner policies using `(select auth.uid())`
 - [ ] A pgTAP file in `supabase/tests/` covering owner CRUD, cross-user denial and anon `42501`
 - [ ] `pnpm db:reset && pnpm db:test && pnpm db:types` all succeed
-- [ ] `LATEST_MIGRATION_PROBE` in `scripts/doctor.mts` updated if this is the newest migration
+- [ ] Table added to `TABLE_PROBES` in `scripts/doctor.mts`

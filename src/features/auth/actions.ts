@@ -11,7 +11,9 @@ import { createClient } from "@/lib/supabase/server";
 import { fieldErrorsFrom, type ActionResult } from "@/lib/validation/action-result";
 import { safeNextPath } from "@/lib/validation/redirect";
 
+// @module:email
 import { sendWelcomeOnce } from "./welcome";
+// @end:email
 
 import {
   newPasswordSchema,
@@ -62,8 +64,10 @@ export async function signIn(input: SignInInput): Promise<ActionResult> {
     // Same message for unknown email and wrong password, so accounts can't be enumerated.
     return { ok: false, error: "Incorrect email or password." };
   }
+  // @module:email
   // Covers users whose confirmation link was opened in another browser (callback couldn't sign them in).
   await sendWelcomeOnce();
+  // @end:email
   redirect(safeNextPath(next));
 }
 

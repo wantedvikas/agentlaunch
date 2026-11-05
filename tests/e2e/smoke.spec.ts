@@ -143,6 +143,7 @@ test("forms submitted before hydration never put credentials in the URL", async 
   expect(page.url()).not.toContain("someone");
 });
 
+// @module:analytics
 test.describe("cookie consent", () => {
   test("Google Analytics loads only after the visitor accepts", async ({ page }) => {
     const gaRequests: string[] = [];
@@ -179,3 +180,4 @@ test.describe("cookie consent", () => {
     await expect(page.getByRole("region", { name: "Cookie consent" })).toBeVisible();
   });
 });
+// @end:analytics

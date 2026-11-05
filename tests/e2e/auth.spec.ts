@@ -1,6 +1,11 @@
 import { expect, test } from "@playwright/test";
 
-import { countEmails, DEMO, latestEmailLink, signIn, signUpAndConfirm } from "./helpers";
+import { siteConfig } from "@/config/site";
+
+import { DEMO, latestEmailLink, signIn, signUpAndConfirm } from "./helpers";
+// @module:email
+import { countEmails } from "./helpers";
+// @end:email
 
 // Account-creating flows run once (desktop) to stay within auth rate limits.
 test.skip(({ isMobile }) => isMobile, "auth flows run on desktop only");
@@ -120,8 +125,10 @@ test("password reset by email", async ({ page }) => {
   await signIn(page, email, "brand-new-password-1");
   await expect(page).toHaveURL(/\/dashboard$/);
 
+  // @module:email
   // Welcome email went out once (first confirmed sign-in), not again on later sign-ins.
-  await expect.poll(() => countEmails(email, "Welcome to AgentLaunch")).toBe(1);
+  await expect.poll(() => countEmails(email, `Welcome to ${siteConfig.name}`)).toBe(1);
+  // @end:email
 });
 
 test("social sign-in buttons start the provider's OAuth flow", async ({ page }) => {

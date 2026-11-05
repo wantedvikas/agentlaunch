@@ -1,6 +1,8 @@
 import { NextResponse, type NextRequest } from "next/server";
 
+// @module:email
 import { sendWelcomeOnce } from "@/features/auth/welcome";
+// @end:email
 import { createClient } from "@/lib/supabase/server";
 import { safeNextPath } from "@/lib/validation/redirect";
 
@@ -17,7 +19,9 @@ export async function GET(request: NextRequest) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
+      // @module:email
       await sendWelcomeOnce();
+      // @end:email
       return NextResponse.redirect(new URL(next, origin));
     }
   }

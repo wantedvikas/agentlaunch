@@ -13,8 +13,14 @@ type Env = Record<string, string | undefined>;
 type Fetch = (url: string, init?: RequestInit) => Promise<Response>;
 
 const PROVIDERS = ["google", "github", "azure", "slack_oidc"];
-// Newest migration's objects; update when you add a migration so doctor detects stale databases.
-const LATEST_MIGRATION_PROBE = { kind: "rpc", name: "claim_welcome_email" } as const;
+// Objects created by migrations. Add your newest table or function here so doctor can tell when
+// a database is behind (see AGENTS.md Recipe 1). Probes never read or write data.
+const TABLE_PROBES = ["projects"];
+const RPC_PROBES: string[] = [
+  // @module:email
+  "claim_welcome_email",
+  // @end:email
+];
 
 const ok = (name: string, detail: string): Check => ({ status: "ok", name, detail });
 const warn = (name: string, detail: string): Check => ({ status: "warn", name, detail });
@@ -106,6 +112,7 @@ export function checkEnv(env: Env, hasEnvFile: boolean): Check[] {
   if (unknown.length)
     out.push(warn("NEXT_PUBLIC_AUTH_PROVIDERS", `ignored unknown ids: ${unknown.join(", ")}`));
 
+  // @module:email
   const transport = env.EMAIL_TRANSPORT || "log";
   if (transport === "log")
     out.push(warn("EMAIL_TRANSPORT", "log (emails are not sent; fine for local dev)"));
@@ -122,6 +129,7 @@ export function checkEnv(env: Env, hasEnvFile: boolean): Check[] {
         : fail("EMAIL_TRANSPORT", "smtp needs SMTP_HOST and EMAIL_FROM"),
     );
   else out.push(fail("EMAIL_TRANSPORT", "must be resend, smtp or log"));
+  // @end:email
 
   const ga = env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
   if (ga && !/^G-[A-Z0-9]{4,20}$/.test(ga))
@@ -159,24 +167,26 @@ export async function checkSupabase(env: Env, fetchFn: Fetch): Promise<Check[]> 
 
   // Anonymous callers are denied (401/42501) on existing objects, and get 404 for missing ones.
   // That tells us whether migrations ran without reading or writing any data.
-  const tables = await fetchFn(`${base}/rest/v1/projects?select=id&limit=1`, { headers });
-  const latest = await fetchFn(`${base}/rest/v1/rpc/${LATEST_MIGRATION_PROBE.name}`, {
-    method: "POST",
-    headers,
-    body: "{}",
-  });
-  if (tables.status === 404)
+  const tables = await Promise.all(
+    TABLE_PROBES.map((t) => fetchFn(`${base}/rest/v1/${t}?select=id&limit=1`, { headers })),
+  );
+  const rpcs = await Promise.all(
+    RPC_PROBES.map((fn) =>
+      fetchFn(`${base}/rest/v1/rpc/${fn}`, { method: "POST", headers, body: "{}" }),
+    ),
+  );
+  if (tables.every((r) => r.status === 404))
     out.push(
       fail(
         "Migrations",
         "tables missing; run `pnpm db:reset` (local) or `supabase db push` (hosted)",
       ),
     );
-  else if (latest.status === 404)
+  else if ([...tables, ...rpcs].some((r) => r.status === 404))
     out.push(fail("Migrations", "database is behind; apply the newest migrations"));
-  else if (tables.status === 200)
+  else if (tables.some((r) => r.status === 200))
     out.push(
-      fail("Row-level security", "anonymous users can read `projects`; grants/RLS are wrong"),
+      fail("Row-level security", "anonymous users can read protected tables; grants/RLS are wrong"),
     );
   else out.push(ok("Migrations", "applied, and anonymous access is denied"));
 

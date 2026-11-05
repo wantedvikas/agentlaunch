@@ -2,6 +2,31 @@
 
 Results exactly as they ran. Newest milestone first.
 
+## C4 — 2026-11-05 (local, macOS arm64, Node 22.23.3, pnpm 12.16.1)
+
+| Check                                                                                                                                            | Result   |
+| ------------------------------------------------------------------------------------------------------------------------------------------------ | -------- |
+| Template: format, lint, typecheck, unit (65), build                                                                                              | ✅       |
+| Template: pgTAP 27/27, doctor, E2E 42 passed / 35 skipped                                                                                        | ✅       |
+| CLI unit tests (`node --test`)                                                                                                                   | ✅ 12/12 |
+| Generated **full** app (all modules, `--providers github`): format, lint, typecheck, unit 65, build, pgTAP 27/27, doctor, E2E 42 passed          | ✅       |
+| Generated **minimal** app (`--no-email --no-analytics --no-docker`): format, lint, typecheck, unit 52, build, pgTAP 22/22, doctor, E2E 37 passed | ✅       |
+| `npm pack`: 6 files, 7.7 kB, no tests or template shipped                                                                                        | ✅       |
+| Packed CLI, default tag `v0.2.0` missing: clean "HTTP 404" error, no folder left behind                                                          | ✅       |
+| Packed CLI, real GitHub download (`--template wantedvikas/agentlaunch#main`)                                                                     | ✅       |
+
+**CLI unit coverage:** marker stripping (all comment styles; included vs excluded; blank-line collapse; untouched files); rejects unknown, unclosed, nested and stray markers; name validation (rejects `../evil`, spaces, empty); a full transform over a fixture (module and template-file removal, licence move, package rename, dependency removal, app name, Supabase project id, providers in `.env.example`, generated README).
+
+**Found by the generated-app checks:** a doctor unit test for email checks wasn't inside the email markers, so the minimal app's unit tests failed. Fixed. An email marker placed before a closing brace was caught on review before any variant ran.
+
+### Not run in C4
+
+- **CLI workflow on GitHub:** runs on the next push.
+- **The no-email / no-analytics / no-docker variants:** static checks only, in CI on push.
+- **npm publish:** needs the owner's npm account; the name `create-agentlaunch` was free as of 2026-11-05.
+- **Interactive prompt flow:** exercised manually only; CI uses `--yes`.
+- **Windows:** not run (relies on `tar` in Windows 10+).
+
 ## C3 — 2026-11-05 (local, macOS arm64, Node 22.23.3, pnpm 12.16.1, Supabase CLI 3.0.0, Docker 29.8.2)
 
 | Check               | Command                                                                                          | Result                                                                           |

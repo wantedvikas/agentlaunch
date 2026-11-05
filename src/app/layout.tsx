@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 
+// @module:analytics
 import { Analytics } from "@/components/analytics/analytics";
+// @end:analytics
 import { themeInitScript } from "@/components/theme/theme";
 import { Toaster } from "@/components/ui/toast";
 import { siteConfig } from "@/config/site";
@@ -60,7 +62,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </a>
         {children}
         <Toaster />
+        {/* @module:analytics */}
         <Analytics />
+        {/* @end:analytics */}
       </body>
     </html>
   );

@@ -59,6 +59,7 @@ describe("checkEnv", () => {
     expect(failures(checks)).toEqual(["NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY", "NEXT_PUBLIC_X"]);
     expect(JSON.stringify(checks)).not.toContain("sb_secret_zzz");
   });
+  // @module:email
   it("validates email transport requirements", () => {
     expect(failures(checkEnv({ ...good, EMAIL_TRANSPORT: "resend" }, true))).toEqual([
       "EMAIL_TRANSPORT",
@@ -69,6 +70,7 @@ describe("checkEnv", () => {
       ),
     ).toEqual([]);
   });
+  // @end:email
   it("rejects malformed analytics ids", () => {
     expect(failures(checkEnv({ ...good, NEXT_PUBLIC_GA_MEASUREMENT_ID: "UA-1" }, true))).toEqual([
       "NEXT_PUBLIC_GA_MEASUREMENT_ID",
@@ -84,6 +86,7 @@ describe("checkSupabase", () => {
     expect(
       failures(await checkSupabase(good, fakeFetch({ ...healthy, "GET /rest/v1/projects": 404 }))),
     ).toEqual(["Migrations"]);
+    // @module:email
     expect(
       failures(
         await checkSupabase(
@@ -92,6 +95,7 @@ describe("checkSupabase", () => {
         ),
       ),
     ).toEqual(["Migrations"]);
+    // @end:email
   });
   it("fails loudly if anonymous users can read projects", async () => {
     expect(

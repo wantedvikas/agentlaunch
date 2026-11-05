@@ -38,6 +38,7 @@ test.describe("accessibility (axe)", () => {
     });
   }
 
+  // @module:analytics
   test("cookie banner and open dialog", async ({ page }) => {
     await page.goto("/");
     await expect(page.getByRole("region", { name: "Cookie consent" })).toBeVisible();
@@ -48,4 +49,5 @@ test.describe("accessibility (axe)", () => {
       banner.violations.filter((v) => v.impact === "serious" || v.impact === "critical"),
     ).toEqual([]);
   });
+  // @end:analytics
 });

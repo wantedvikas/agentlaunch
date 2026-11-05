@@ -1,6 +1,8 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
+// @module:analytics
 import { analyticsConfig } from "@/components/analytics/config";
+// @end:analytics
 import { newPasswordSchema, signInSchema, signUpSchema } from "@/features/auth/schema";
 import { rateLimit, resetRateLimits } from "@/lib/rate-limit";
 import { parseOAuthProviders } from "@/lib/supabase/env";
@@ -73,6 +75,7 @@ describe("parseOAuthProviders", () => {
   });
 });
 
+// @module:analytics
 describe("analyticsConfig", () => {
   it("accepts well-formed ids", () => {
     const c = analyticsConfig({
@@ -90,3 +93,4 @@ describe("analyticsConfig", () => {
     ).toBeNull();
   });
 });
+// @end:analytics

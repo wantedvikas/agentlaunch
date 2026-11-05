@@ -31,12 +31,16 @@ export default defineConfig({
       NEXT_PUBLIC_SITE_URL: `http://localhost:${PORT}`,
       // Exercise optional integrations against local fakes: SMTP → Mailpit, a GitHub button
       // (Supabase builds the authorize URL locally), and a dummy GA id for the consent banner.
+      // @module:email
       EMAIL_TRANSPORT: "smtp",
       SMTP_HOST: "127.0.0.1",
       SMTP_PORT: "54325",
-      EMAIL_FROM: "AgentLaunch <hello@agentlaunch.local>",
+      EMAIL_FROM: "App <hello@example.local>",
+      // @end:email
       NEXT_PUBLIC_AUTH_PROVIDERS: "github",
+      // @module:analytics
       NEXT_PUBLIC_GA_MEASUREMENT_ID: "G-TEST000000",
+      // @end:analytics
     },
     command: `pnpm build && pnpm start --port ${PORT}`,
     url: `http://localhost:${PORT}`,

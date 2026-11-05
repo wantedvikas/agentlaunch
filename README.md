@@ -30,6 +30,14 @@ Solo founders and developers, including people building with AI coding agents, w
 - Built for AI coding agents: `AGENTS.md` recipes, Claude Code skills, Cursor rules and `llms.txt`
 - Automated accessibility checks (axe) on every page in light and dark mode
 
+## Create a project
+
+```bash
+npx create-agentlaunch@latest my-app      # pick sign-in providers and modules
+```
+
+Or click **Use this template** on GitHub to get everything.
+
 ## Quickstart
 
 Requires Node 22+.

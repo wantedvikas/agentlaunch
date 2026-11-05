@@ -1,0 +1,70 @@
+# Template-repo only (removed from generated apps): tests create-agentlaunch and builds every
+# module combination we support, so a module can't silently break another.
+name: CLI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cli-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - run: npm test
+        working-directory: packages/create-agentlaunch
+
+  generate:
+    needs: unit
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: full, flags: "--providers github", e2e: true }
+          - { name: minimal, flags: "--no-email --no-analytics --no-docker", e2e: true }
+          - { name: no-email, flags: "--no-email", e2e: false }
+          - { name: no-analytics, flags: "--no-analytics", e2e: false }
+          - { name: no-docker, flags: "--no-docker", e2e: false }
+    name: generate (${{ matrix.name }})
+    defaults:
+      run:
+        working-directory: ${{ runner.temp }}/app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - name: Generate app
+        working-directory: ${{ github.workspace }}
+        run: node packages/create-agentlaunch/index.mjs "$RUNNER_TEMP/app" --yes --no-git --template . ${{ matrix.flags }}
+      - run: pnpm format:check
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm build
+      - if: matrix.e2e
+        run: pnpm db:start && pnpm db:test
+      - if: matrix.e2e
+        name: Write .env.local from the local stack (public local values only)
+        run: |
+          eval "$(pnpm exec supabase status -o env | grep -E '^(API_URL|PUBLISHABLE_KEY)=')"
+          printf 'NEXT_PUBLIC_SITE_URL=http://localhost:3000\nNEXT_PUBLIC_SUPABASE_URL=%s\nNEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=%s\n' "$API_URL" "$PUBLISHABLE_KEY" > .env.local
+      - if: matrix.e2e
+        run: pnpm run doctor
+      - if: matrix.e2e
+        run: pnpm exec playwright install --with-deps chromium && pnpm test:e2e

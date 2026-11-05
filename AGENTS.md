@@ -22,11 +22,16 @@ Instructions for AI coding agents (Claude Code, Cursor, Codex, …) and humans. 
 | `src/components/ui/`                         | Design-system primitives (Radix-based). Reuse; don't fork                                    |
 | `src/lib/permissions/auth.ts`                | `requireUser()` / `getCurrentUser()`: server-side identity                                   |
 | `src/lib/supabase/`                          | Server client, proxy session refresh, generated `database.types.ts`                          |
-| `src/lib/email/`                             | `sendEmail()` (Resend/SMTP/log) and templates                                                |
-| `src/config/site.ts`                         | App name, nav, links                                                                         |
-| `src/app/globals.css`                        | Design tokens (light + dark)                                                                 |
-| `supabase/migrations/` · `supabase/tests/`   | Schema, grants, RLS · pgTAP authorization tests                                              |
-| `scripts/doctor.mts`                         | `pnpm run doctor` read-only setup check                                                      |
+
+<!-- @module:email -->
+
+| `src/lib/email/` | `sendEmail()` (Resend/SMTP/log) and templates |
+<!-- @end:email -->
+
+| `src/config/site.ts` | App name, nav, links |
+| `src/app/globals.css` | Design tokens (light + dark) |
+| `supabase/migrations/` · `supabase/tests/` | Schema, grants, RLS · pgTAP authorization tests |
+| `scripts/doctor.mts` | `pnpm run doctor` read-only setup check |
 
 ## Rules
 
@@ -44,6 +49,7 @@ Instructions for AI coding agents (Claude Code, Cursor, Codex, …) and humans. 
 12. **Never use the Supabase secret / service_role key** in this app, and never bypass RLS.
 13. **Forms** use `method="post"` plus React Hook Form, so a submit before hydration can't leak values into the URL.
 14. **Request-time data** (anything reading the session) goes inside `<Suspense>`; see Next.js notes below.
+15. **Template repository only:** optional-module code (email, analytics, Docker) is wrapped in `@module:<id>` / `@end:<id>` comments used by the `create-agentlaunch` installer. Keep new code for those features inside the markers, and never put a marker in the middle of a statement or before a closing brace.
 
 ## Recipe 1: Add an RLS-protected table
 
@@ -71,7 +77,7 @@ Example: `notes` owned by a user.
    ```
 2. Add `supabase/tests/notes.test.sql`, copying `rls_profiles_projects.test.sql`. At minimum: owner can CRUD; user B can't read, update or delete A's rows (verify as table owner afterwards); B can't insert with A's `owner_id`; anon gets `42501`.
 3. `pnpm db:reset && pnpm db:test && pnpm db:types`
-4. If it's the newest migration, update `LATEST_MIGRATION_PROBE` in `scripts/doctor.mts` so doctor detects stale databases.
+4. Add the table to `TABLE_PROBES` in `scripts/doctor.mts` so doctor detects databases that are behind.
 
 ## Recipe 2: Add a CRUD feature page
 
@@ -93,9 +99,13 @@ Example: notes UI on top of Recipe 1.
 3. Check contrast for text on the new color in both themes (aim for 4.5:1), then use it through components (e.g. add an `info` variant in `badge.tsx` with `cva`), not ad-hoc classes.
 4. `pnpm test:e2e` (includes the axe accessibility check) and look at both themes.
 
+<!-- @module:email -->
+
 ## Recipe 4: Add an email
 
 See `docs/EMAIL_AND_ANALYTICS.md` → "Add a new email". Server code only; escape user values in HTML.
+
+<!-- @end:email -->
 
 ## Next.js 16 specifics in this repo
 
