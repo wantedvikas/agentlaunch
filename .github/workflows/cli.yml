@@ -42,7 +42,9 @@ jobs:
     name: generate (${{ matrix.name }})
     defaults:
       run:
-        working-directory: ${{ runner.temp }}/app
+        # Outside the checkout, so the template's own config doesn't apply to the generated app.
+        # (`runner.temp` isn't allowed in defaults; `github.workspace` is.)
+        working-directory: ${{ github.workspace }}/../app
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -51,7 +53,7 @@ jobs:
           node-version-file: .nvmrc
       - name: Generate app
         working-directory: ${{ github.workspace }}
-        run: node packages/create-agentlaunch/index.mjs "$RUNNER_TEMP/app" --yes --no-git --template . ${{ matrix.flags }}
+        run: node packages/create-agentlaunch/index.mjs "$GITHUB_WORKSPACE/../app" --yes --no-git --template . ${{ matrix.flags }}
       - run: pnpm format:check
       - run: pnpm lint
       - run: pnpm typecheck
