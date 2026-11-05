@@ -2,7 +2,7 @@
 
 **A SaaS starter coding agents can work with:** Next.js, Supabase and a polished, accessible design system, under the MIT licence.
 
-> **Status: v0.4.0.** Everything listed below works today. See [docs/FEATURE_MATRIX.md](docs/FEATURE_MATRIX.md) for exactly what's shipped and what Pro adds.
+> **Status: v0.4.1.** Everything listed below works today. See [docs/FEATURE_MATRIX.md](docs/FEATURE_MATRIX.md) for exactly what's shipped and what Pro adds.
 
 ![Home page, desktop](docs/screenshots/home-desktop-light.png)
 

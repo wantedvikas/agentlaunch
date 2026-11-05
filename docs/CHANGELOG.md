@@ -2,6 +2,23 @@
 
 All notable changes to AgentLaunch Community. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: SemVer.
 
+## [0.4.1] — 2026-11-05 (design refresh)
+
+### Changed
+
+- **Warm, animated design, inspired by slite.com:**
+  - **Look:** cream paper, charcoal text, coral pill buttons (4.8:1 contrast with white), peach accents, rounded cards and warm shadows.
+  - **Type:** Bricolage Grotesque headings, Figtree body text and Geist Mono for code.
+- **Home page:**
+  - **Hero:** a large centred headline over a terminal that types the real `npx create-agentlaunch` session.
+  - **Sections:** a coding-agent marquee, an animated agent-session demo (chat, a typed migration, checks ticking green), feature cards that reveal on scroll, auto-advancing Scaffold / Secure / Ship tabs, a floating stack "orbit", and a glowing closing call to action.
+- **Motion:**
+  - **Implementation:** CSS keyframes plus `IntersectionObserver`, with no new dependencies.
+  - **Behaviour:** loops pause off-screen, and the hero entrance is pure CSS.
+  - **Reduced motion:** shows every animation in its finished state.
+  - **Screen readers and layout:** the terminal reserves its full size and gives screen readers the full transcript.
+- **Docs screenshots:** captured in their finished state; the home image now shows only the hero.
+
 ## [0.4.0] — 2026-11-05 (milestone C6 + redesign)
 
 ### Added
