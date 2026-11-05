@@ -4,22 +4,23 @@ Results exactly as they ran. Newest milestone first.
 
 ## C3 — 2026-11-05 (local, macOS arm64, Node 22.23.3, pnpm 12.16.1, Supabase CLI 3.0.0, Docker 29.8.2)
 
-| Check | Command | Result |
-| --- | --- | --- |
-| Formatting | `pnpm format:check` | ✅ |
-| Lint | `pnpm lint` | ✅ 0 errors, 0 warnings |
-| Typecheck | `pnpm typecheck` | ✅ |
-| Unit tests | `pnpm test` | ✅ 65 passed, 5 files |
-| Build | `pnpm build` | ✅ |
-| pgTAP | `pnpm db:test` | ✅ 27/27 (2 files) |
-| E2E + accessibility | `pnpm test:e2e` | ✅ 41 passed, 35 skipped by design |
-| Setup check | `pnpm run doctor` | ✅ (plus negative cases in unit tests) |
-| Docker image | `docker build` + run | ✅ `/` 200, `/login` 200, `/dashboard` → 307 to login, `/robots.txt` 200; 301 MB |
-| Clean-clone dry run | committed files only → `pnpm install --frozen-lockfile` → `.env.example` → doctor → `pnpm check` | ✅ |
-| Dependency audit | `pnpm audit --prod` | ✅ no known vulnerabilities |
-| Secret scan | key patterns over all tracked and untracked files | ✅ (only hit is the pattern itself in RELEASE_CHECKLIST.md) |
+| Check               | Command                                                                                          | Result                                                                           |
+| ------------------- | ------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
+| Formatting          | `pnpm format:check`                                                                              | ✅                                                                               |
+| Lint                | `pnpm lint`                                                                                      | ✅ 0 errors, 0 warnings                                                          |
+| Typecheck           | `pnpm typecheck`                                                                                 | ✅                                                                               |
+| Unit tests          | `pnpm test`                                                                                      | ✅ 65 passed, 5 files                                                            |
+| Build               | `pnpm build`                                                                                     | ✅                                                                               |
+| pgTAP               | `pnpm db:test`                                                                                   | ✅ 27/27 (2 files)                                                               |
+| E2E + accessibility | `pnpm test:e2e`                                                                                  | ✅ 41 passed, 35 skipped by design                                               |
+| Setup check         | `pnpm run doctor`                                                                                | ✅ (plus negative cases in unit tests)                                           |
+| Docker image        | `docker build` + run                                                                             | ✅ `/` 200, `/login` 200, `/dashboard` → 307 to login, `/robots.txt` 200; 301 MB |
+| Clean-clone dry run | committed files only → `pnpm install --frozen-lockfile` → `.env.example` → doctor → `pnpm check` | ✅                                                                               |
+| Dependency audit    | `pnpm audit --prod`                                                                              | ✅ no known vulnerabilities                                                      |
+| Secret scan         | key patterns over all tracked and untracked files                                                | ✅ (only hit is the pattern itself in RELEASE_CHECKLIST.md)                      |
 
 **New coverage:**
+
 - **Unit:**
   - OAuth provider parsing.
   - Email transports: log never prints the recipient; Resend request shape; failures never log addresses or keys; `EMAIL_FROM` required.
@@ -37,11 +38,13 @@ Results exactly as they ran. Newest milestone first.
 **Skipped by design (35):** 20 screenshot captures; 7 account-creating or OAuth flows on mobile; 5 axe runs on mobile (axe is layout-independent, so it runs once, on desktop); 3 viewport-specific tests.
 
 **Bugs found and fixed by these tests:**
+
 - **Invalid `<dl>` structure** in the Overview stats.
 - **Success-badge contrast** of 4.48:1, below the AA minimum.
 - **Banner in screenshots:** the docs screenshots would have shown the cookie banner.
 
 ### Not run in C3
+
 - **Real OAuth sign-in** with Google, GitHub, Microsoft or Slack: needs the owner's OAuth apps. The redirect is tested.
 - **Resend live send:** needs a Resend key. The request shape is unit-tested and SMTP is tested for real.
 - **Railway / Fly / Vercel deploys:** need accounts. The Docker image itself was built and run.
