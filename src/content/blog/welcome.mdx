@@ -1,0 +1,33 @@
+export const meta = {
+  title: "Welcome to your blog",
+  description: "How the built-in MDX blog works and how to write your first real post.",
+  date: "2026-11-05",
+  author: "AgentLaunch",
+  demo: true,
+};
+
+This is an **example post** that ships with the starter. Edit it, or delete it, before you launch.
+
+## Writing a post
+
+Each post is one `.mdx` file in `src/content/blog/`. The file name becomes the URL, so `my-first-post.mdx` is served at `/blog/my-first-post`. Use lowercase letters, digits and hyphens.
+
+At the top of the file, export the post's details:
+
+```js
+export const meta = {
+  title: "My first post",
+  description: "One sentence for search results and link previews.",
+  date: "2026-12-01",
+  author: "Your Name",
+};
+```
+
+Everything below is Markdown, and you can use React components too. The build checks every post's details, so a missing title or a malformed date stops the build with the file name instead of shipping a broken page.
+
+## What you get
+
+- An index at [/blog](/blog), newest first
+- Page titles, descriptions and Open Graph tags from each post
+- Every post listed in `/sitemap.xml`
+- Styling that follows your design tokens in light and dark mode

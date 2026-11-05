@@ -1,6 +1,8 @@
 import { expect, test } from "@playwright/test";
 
+// @module:email
 import { siteConfig } from "@/config/site";
+// @end:email
 
 import { DEMO, latestEmailLink, signIn, signUpAndConfirm } from "./helpers";
 // @module:email

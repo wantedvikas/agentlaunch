@@ -2,6 +2,45 @@
 
 Results exactly as they ran. Newest milestone first.
 
+## C5 — 2026-11-06 (local, macOS arm64, Node 22.23.3, pnpm 12.16.1, Supabase CLI 3.0.0 with Storage)
+
+| Check                                                                                                      | Result                             |
+| ---------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| Template: format, lint (0 warnings), typecheck, build                                                      | ✅                                 |
+| Template: unit                                                                                             | ✅ 80 passed                       |
+| Template: pgTAP                                                                                            | ✅ 38/38 (3 files)                 |
+| Template: E2E (desktop + mobile, axe at both widths)                                                       | ✅ 59 passed, 32 skipped by design |
+| Template: doctor                                                                                           | ✅                                 |
+| CLI unit                                                                                                   | ✅ 12/12                           |
+| Generated **full** app (8 modules, `--providers github`): static checks, unit 80, pgTAP 38, doctor, E2E 59 | ✅                                 |
+| Generated **minimal** app (all 6 optional modules off): static checks, unit 52, pgTAP 22, doctor, E2E 41   | ✅                                 |
+
+**New coverage:**
+
+- **Uploads:**
+  - Unit: allowed types and extensions, the size and empty-file limits, and content sniffing that rejects HTML-as-PNG, an executable posing as a PDF, NUL bytes in text and SVG; plus name sanitising (traversal, unicode, length).
+  - pgTAP: the bucket is private, the 5 MiB limit, no SVG, PDF allowed; the owner can upload into their own folder; nobody can upload into another user's folder or outside a folder; another user can't list; anon can't read or write.
+  - E2E: upload → the signed link returns the exact bytes → delete; SVG rejected in the browser; a spoofed PNG rejected by the server; another user, through the real Storage API, can't list, sign, download, delete or upload into the owner's folder.
+- **AI:**
+  - Unit (SDK mocked): the not-configured state; server-side validation; request shape (`claude-opus-5-5`, `fallbacks: "default"`, the beta header, `metadata.user_id`); refusal returns no partial text; rate-limit and authentication errors mapped to friendly messages; prompts never logged; per-user rate limit.
+  - E2E: the page shows "not configured" without a key.
+- **Blog:** E2E checks that the index lists the 3 labelled demo posts newest-first; a post renders with its title and description metadata and the demo notice; an unknown slug shows not-found with `noindex`; posts appear in the sitemap; and the pages fit 375px with axe passing.
+
+**Found and fixed by these checks:**
+
+- **Not keyboard-reachable on phones:** code blocks and tables that scroll sideways on mobile (axe `scrollable-region-focusable`). Fixed, and axe now runs at both widths.
+- **Lint error in no-blog apps:** `let config` in `next.config.ts` failed `prefer-const` once the blog was removed. Now a `const` plugin list.
+- **Unused import:** an import that's only used by the email test.
+- **Test accounts over the limit:** the suite created more accounts than the per-IP sign-up limit allows, so the upload tests now share one.
+
+**Documented behaviour:** an unknown blog slug returns HTTP 200 with the not-found page and `<meta name="robots" content="noindex">`, because it renders after streaming starts. That's Next 16's documented behaviour; prerendered posts are unaffected.
+
+### Not run in C5
+
+- **Live Claude call:** costs money and needs a key; the request shape is unit-tested.
+- **The no-blog, no-uploads and no-ai variants:** static checks only, in the CI matrix on push.
+- **Malware scanning of uploads:** out of scope, listed in the security checklist.
+
 ## C4 — 2026-11-05 (local, macOS arm64, Node 22.23.3, pnpm 12.16.1)
 
 | Check                                                                                                                                            | Result   |

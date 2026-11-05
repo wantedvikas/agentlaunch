@@ -1,0 +1,31 @@
+export const meta = {
+  title: "Building with a coding agent",
+  description:
+    "How to point Claude Code, Cursor or another AI agent at this codebase and get changes that follow its rules.",
+  date: "2026-11-03",
+  author: "AgentLaunch",
+  demo: true,
+};
+
+This is an **example post**. Replace it with your own story once you've shipped something.
+
+## Start with AGENTS.md
+
+`AGENTS.md` at the root of the repository is written for AI coding agents. It lists the rules (authorize on the server, change the schema only through migrations, no new dependencies without asking) and gives step-by-step recipes for the common jobs:
+
+- adding a table protected by row-level security
+- adding a dashboard page with create, edit and delete
+- extending the design tokens
+- sending a new email
+
+Claude Code reads it automatically through `CLAUDE.md`, and Cursor through `.cursor/rules/`.
+
+## Ask for the checks
+
+A good request ends with the proof you want:
+
+> Add a notes page following the CRUD recipe. Run `pnpm check`, `pnpm db:test` and `pnpm test:e2e`, and tell me the real results.
+
+## Review like a teammate
+
+Agents are fast, but you're still the reviewer. Read the migration, check that new queries filter by `owner_id`, and run `pnpm run doctor` before you deploy.

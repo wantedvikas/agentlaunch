@@ -172,7 +172,7 @@ Local demo login: \`demo@agentlaunch.local\` / \`demo-password-123\` (seeded loc
 
 - Email/password auth with confirmation and password reset${providers.length ? `, plus sign-in with ${providers.join(", ")} (configure each one: docs/AUTH_SETUP.md)` : ""}
 - Per-user data protected by row-level security, with SQL tests (\`pnpm db:test\`)
-- Dashboard, example projects CRUD, profile settings, light/dark themes${has("email") ? "\n- App email through Resend or SMTP, with a welcome email (docs/EMAIL_AND_ANALYTICS.md)" : ""}${has("analytics") ? "\n- Plausible or Google Analytics with a cookie-consent banner (docs/EMAIL_AND_ANALYTICS.md)" : ""}${has("docker") ? "\n- A production Dockerfile (docs/DEPLOY.md)" : ""}
+- Dashboard, example projects CRUD, profile settings, light/dark themes${has("email") ? "\n- App email through Resend or SMTP, with a welcome email (docs/EMAIL_AND_ANALYTICS.md)" : ""}${has("analytics") ? "\n- Plausible or Google Analytics with a cookie-consent banner (docs/EMAIL_AND_ANALYTICS.md)" : ""}${has("blog") ? "\n- MDX blog: add posts as .mdx files in src/content/blog" : ""}${has("uploads") ? "\n- Private per-user file uploads in Supabase Storage, with storage policies and tests" : ""}${has("ai") ? "\n- AI assistant example calling Claude from the server (docs/AI.md)" : ""}${has("docker") ? "\n- A production Dockerfile (docs/DEPLOY.md)" : ""}
 
 ## Commands
 

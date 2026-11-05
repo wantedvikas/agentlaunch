@@ -1,13 +1,20 @@
 "use client";
 
-import { FolderKanban, LayoutDashboard, Settings } from "lucide-react";
+import { FileUp, FolderKanban, LayoutDashboard, Settings, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
 
-const icons = { overview: LayoutDashboard, projects: FolderKanban, settings: Settings } as const;
+// Icons for every nav item the template can include (optional modules add "files" and "ai").
+const icons = {
+  overview: LayoutDashboard,
+  projects: FolderKanban,
+  files: FileUp,
+  ai: Sparkles,
+  settings: Settings,
+} as const;
 
 export function isActivePath(pathname: string, href: string) {
   return href === "/dashboard"

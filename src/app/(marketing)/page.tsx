@@ -63,7 +63,10 @@ export default function HomePage() {
             <span aria-hidden>·</span>
             project structure
           </figcaption>
-          <pre className="overflow-x-auto p-5 font-mono text-[13px] leading-relaxed text-muted-foreground">
+          <pre
+            tabIndex={0}
+            className="overflow-x-auto p-5 font-mono text-[13px] leading-relaxed text-muted-foreground"
+          >
             <code>{tree}</code>
           </pre>
         </figure>

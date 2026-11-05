@@ -96,7 +96,10 @@ export default function FeaturesPage() {
 
       <Section aria-labelledby="get-started" className="pt-0 md:pt-0">
         <SectionHeading id="get-started" title="Get started locally" className="mb-6" />
-        <pre className="overflow-x-auto rounded-xl border bg-card p-5 font-mono text-sm leading-relaxed">
+        <pre
+          tabIndex={0}
+          className="overflow-x-auto rounded-xl border bg-card p-5 font-mono text-sm leading-relaxed"
+        >
           <code>{`pnpm install
 cp .env.example .env.local
 pnpm dev          # http://localhost:3000

@@ -35,6 +35,28 @@ What the starter does, and what **you** must do before going live. ✅ = built i
 - ✅ `.env*` git-ignored (except `.env.example`) and excluded from Docker builds; the Docker image runs as non-root
 - ☐ Store production secrets in your host's secret manager; rotate any key that was ever committed or shared
 
+<!-- @module:uploads -->
+
+## File uploads
+
+- ✅ Private bucket; downloads only through 60-second signed URLs
+- ✅ Storage enforces 5 MB and a type allowlist (no SVG or HTML); the server also checks the extension and sniffs the first bytes
+- ✅ Storage policies confine each user to `uploads/<user-id>/`; no overwrite or move; pgTAP + cross-user Storage API tests
+- ✅ Stored names are randomised and sanitised; per-user upload rate limit
+- ☐ Add malware scanning before you let users share files with each other
+
+<!-- @end:uploads -->
+<!-- @module:ai -->
+
+## AI
+
+- ✅ API key server-only; doctor fails if an `sk-ant-` key is in a public variable
+- ✅ Signed-in users only, validated prompts, per-user rate limit, refusal handling; prompts never logged
+- ☐ Set a spend limit in the Anthropic Console; review the per-user limit before launch
+- ☐ Never include other users' data in prompts
+
+<!-- @end:ai -->
+
 ## Privacy
 
 - ✅ Google Analytics loads only after consent; Plausible is cookieless; declining removes `_ga` cookies

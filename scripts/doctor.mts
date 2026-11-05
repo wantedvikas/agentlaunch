@@ -38,7 +38,8 @@ function isHttpUrl(v: string | undefined) {
 /** True if a value looks like a key that must never be public (secret / service_role). */
 export function looksSecret(v: string | undefined) {
   if (!v) return false;
-  if (v.startsWith("sb_secret_")) return true;
+  if (v.startsWith("sb_secret_") || v.startsWith("sk-ant-") || v.startsWith("sk_live_"))
+    return true;
   const payload = v.split(".")[1];
   if (!payload) return false;
   try {
@@ -130,6 +131,13 @@ export function checkEnv(env: Env, hasEnvFile: boolean): Check[] {
     );
   else out.push(fail("EMAIL_TRANSPORT", "must be resend, smtp or log"));
   // @end:email
+
+  // @module:ai
+  if (!env.ANTHROPIC_API_KEY)
+    out.push(
+      warn("ANTHROPIC_API_KEY", "not set (the AI assistant page shows it isn't configured)"),
+    );
+  // @end:ai
 
   const ga = env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
   if (ga && !/^G-[A-Z0-9]{4,20}$/.test(ga))

@@ -2,6 +2,27 @@
 
 All notable changes to AgentLaunch Community. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: SemVer.
 
+## [Unreleased] — 0.3.0 (milestone C5)
+
+### Added
+
+- **MDX blog** (`/blog`, `/blog/[slug]`) with 3 labelled demo posts. The build validates each post's front matter. Posts get metadata, Open Graph tags and sitemap entries, and styles come from the design tokens.
+- **Private file uploads** (`/dashboard/files`) in Supabase Storage:
+  - Bucket rules: 5 MB limit and a type allowlist, enforced by Storage itself.
+  - Server checks: extension and content sniffing.
+  - Access: per-user folder policies, 60-second signed download links, and a per-user rate limit.
+  - Tests: pgTAP and cross-user Storage API tests.
+- **AI assistant example** (`/dashboard/ai`): a Server Action calling Claude (`claude-opus-5-5`) through the official SDK.
+  - Short, cheap answers: low effort and short replies.
+  - Safety: refusal fallbacks, typed error handling, a per-user rate limit, and prompts are never logged.
+  - Setup: a clear "not configured" state without `ANTHROPIC_API_KEY`. Guide: `docs/AI.md`.
+- CLI modules `blog`, `uploads` and `ai` (`--no-blog`, `--no-uploads`, `--no-ai`); the CI matrix now builds 8 variants.
+- `pnpm run doctor` flags Anthropic (`sk-ant-`) and live Stripe keys in public variables, and warns when AI isn't configured.
+
+### Fixed
+
+- Horizontally scrollable code blocks and tables weren't keyboard-focusable on small screens (axe `scrollable-region-focusable`). The axe suite now runs at 375px as well as 1440px.
+
 ## [0.2.0] — 2026-11-05 (milestone C4)
 
 ### Added

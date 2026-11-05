@@ -21,7 +21,7 @@ async function audit(page: Page, path: string, theme: "light" | "dark") {
 }
 
 test.describe("accessibility (axe)", () => {
-  test.skip(({ isMobile }) => isMobile, "layout-independent; run once on desktop");
+  // Runs at both 375px and 1440px: some rules (e.g. scrollable regions) depend on layout.
 
   for (const theme of ["light", "dark"] as const) {
     test(`public pages, ${theme}`, async ({ page }) => {

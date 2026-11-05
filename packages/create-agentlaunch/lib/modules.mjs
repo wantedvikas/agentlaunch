@@ -23,6 +23,43 @@ export const MODULES = {
     dependencies: [],
     devDependencies: [],
   },
+  blog: {
+    label: "MDX blog with example posts",
+    paths: [
+      "src/content/blog",
+      "src/features/blog",
+      "src/app/(marketing)/blog",
+      "src/mdx-components.tsx",
+      "tests/e2e/blog.spec.ts",
+    ],
+    dependencies: ["@next/mdx", "@mdx-js/loader", "@mdx-js/react"],
+    devDependencies: ["@types/mdx"],
+  },
+  uploads: {
+    label: "Private per-user file uploads (Supabase Storage)",
+    paths: [
+      "src/features/uploads",
+      "src/app/(dashboard)/dashboard/files",
+      "supabase/migrations/20261106000000_uploads.sql",
+      "supabase/tests/uploads.test.sql",
+      "tests/unit/uploads.test.ts",
+      "tests/e2e/uploads.spec.ts",
+    ],
+    dependencies: [],
+    devDependencies: [],
+  },
+  ai: {
+    label: "AI assistant example (Claude, server-side)",
+    paths: [
+      "src/features/ai",
+      "src/app/(dashboard)/dashboard/ai",
+      "docs/AI.md",
+      "tests/unit/ai.test.ts",
+      "tests/e2e/ai.spec.ts",
+    ],
+    dependencies: ["@anthropic-ai/sdk"],
+    devDependencies: [],
+  },
   docker: {
     label: "Dockerfile for container hosts (Railway, Fly, any Docker host)",
     paths: ["Dockerfile", ".dockerignore"],

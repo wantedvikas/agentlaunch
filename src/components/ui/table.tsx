@@ -5,7 +5,8 @@ import { cn } from "@/lib/utils";
 /** Semantic table that scrolls horizontally on narrow screens instead of overflowing the page. */
 export function Table({ className, ...props }: React.ComponentProps<"table">) {
   return (
-    <div className="relative w-full overflow-x-auto rounded-lg border">
+    // Focusable so keyboard users can scroll wide tables on small screens.
+    <div tabIndex={0} className="relative w-full overflow-x-auto rounded-lg border">
       <table className={cn("w-full caption-bottom text-sm", className)} {...props} />
     </div>
   );

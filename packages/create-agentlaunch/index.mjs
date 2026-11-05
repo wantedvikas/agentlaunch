@@ -21,6 +21,9 @@ Options:
   --providers <list>      Social sign-in: ${OAUTH_PROVIDERS.join(",")} (comma-separated)
   --no-email              Leave out app email + welcome email
   --no-analytics          Leave out analytics + cookie consent
+  --no-blog               Leave out the MDX blog
+  --no-uploads            Leave out file uploads
+  --no-ai                 Leave out the AI assistant example
   --no-docker             Leave out the Dockerfile
   --no-install            Don't run pnpm install
   --no-git                Don't create a git repository
@@ -37,6 +40,9 @@ async function main() {
       providers: { type: "string" },
       "no-email": { type: "boolean" },
       "no-analytics": { type: "boolean" },
+      "no-blog": { type: "boolean" },
+      "no-uploads": { type: "boolean" },
+      "no-ai": { type: "boolean" },
       "no-docker": { type: "boolean" },
       "no-install": { type: "boolean" },
       "no-git": { type: "boolean" },

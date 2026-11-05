@@ -1,0 +1,37 @@
+export const meta = {
+  title: "Why every table starts locked",
+  description:
+    "A short tour of how this starter protects user data with Postgres row-level security, and how to keep it that way.",
+  date: "2026-11-04",
+  author: "AgentLaunch",
+  demo: true,
+};
+
+This is an **example post** explaining a pattern the starter uses. It's yours to keep, rewrite or delete.
+
+## Three layers, one rule
+
+Users can only see and change their own rows. The starter enforces that three times:
+
+1. **The page** redirects signed-out visitors to the login screen. That's convenience, not security.
+2. **The server code** checks who's signed in with `requireUser()` and filters every query by `owner_id`.
+3. **The database** has row-level security (RLS) policies, so even a buggy query can't return someone else's data.
+
+The third layer is the one that matters most, because it holds even when the other two have a mistake.
+
+## Deny first, then allow
+
+Every migration starts by taking all access away, then grants back only what's needed:
+
+```sql
+revoke all on table public.projects from anon, authenticated;
+grant select, delete on table public.projects to authenticated;
+grant insert (name, description, status) on table public.projects to authenticated;
+alter table public.projects enable row level security;
+```
+
+Notice `owner_id` isn't in the insert grant. It defaults to the signed-in user, and nobody can set it to someone else.
+
+## Proven by tests
+
+`pnpm db:test` signs in as two different users, plus an anonymous visitor, and checks that each one is blocked from the others' data. Add the same kind of test whenever you add a table. The `add-rls-table` recipe in `AGENTS.md` walks through it.

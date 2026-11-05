@@ -2,7 +2,7 @@
 
 **A SaaS starter coding agents can work with:** Next.js, Supabase and a polished, accessible design system, under the MIT licence.
 
-> **Status: v0.1.0 release candidate.** The UI, auth, per-user data with row-level security, email, analytics, setup checks and agent guides all work today. Next releases add the `npx create-agentlaunch` installer, a blog, file uploads, an AI demo, Stripe billing and a basic admin. See [docs/FEATURE_MATRIX.md](docs/FEATURE_MATRIX.md) for exactly what's shipped.
+> **Status: v0.3.0 in development.** Everything listed below works today. See [docs/FEATURE_MATRIX.md](docs/FEATURE_MATRIX.md) for exactly what's shipped and what Pro adds.
 
 ![Home page, desktop](docs/screenshots/home-desktop-light.png)
 
@@ -23,6 +23,9 @@ Solo founders and developers, including people building with AI coding agents, w
 - `profiles` and `projects` tables with explicit grants and owner-only row-level security, proven by 22 pgTAP tests (two users plus anonymous)
 - Project create / edit / delete and profile settings, with Zod validation on client and server, toasts, and empty, loading and error states
 - An open-redirect guard on `?next=`, generic auth errors (no account enumeration), and per-IP rate limits on auth actions
+- An MDX blog with example posts, metadata and sitemap entries
+- Private per-user file uploads in Supabase Storage (type and size checks, content sniffing, storage policies, signed download links)
+- An AI assistant example calling Claude from the server ([docs/AI.md](docs/AI.md))
 - Email through Resend or any SMTP provider, with a once-only welcome email
 - Plausible or Google Analytics, with a cookie-consent banner that keeps GA off until visitors accept
 - `pnpm run doctor`: a read-only setup check that never prints secrets

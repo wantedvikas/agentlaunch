@@ -23,15 +23,31 @@ Instructions for AI coding agents (Claude Code, Cursor, Codex, …) and humans. 
 | `src/lib/permissions/auth.ts`                | `requireUser()` / `getCurrentUser()`: server-side identity                                   |
 | `src/lib/supabase/`                          | Server client, proxy session refresh, generated `database.types.ts`                          |
 
-<!-- @module:email -->
-
-| `src/lib/email/` | `sendEmail()` (Resend/SMTP/log) and templates |
-<!-- @end:email -->
-
 | `src/config/site.ts` | App name, nav, links |
 | `src/app/globals.css` | Design tokens (light + dark) |
 | `supabase/migrations/` · `supabase/tests/` | Schema, grants, RLS · pgTAP authorization tests |
 | `scripts/doctor.mts` | `pnpm run doctor` read-only setup check |
+
+<!-- @module:email -->
+
+- `src/lib/email/`: `sendEmail()` (Resend/SMTP/log) and templates
+
+<!-- @end:email -->
+<!-- @module:blog -->
+
+- `src/content/blog/` · `src/features/blog/`: MDX posts (`export const meta = {...}` + Markdown) and the loader that validates them
+
+<!-- @end:blog -->
+<!-- @module:uploads -->
+
+- `src/features/uploads/`: File rules (`schema.ts`), Storage queries/actions; bucket + policies in a migration
+
+<!-- @end:uploads -->
+<!-- @module:ai -->
+
+- `src/features/ai/`: Server Action calling Claude; see `docs/AI.md`
+
+<!-- @end:ai -->
 
 ## Rules
 
