@@ -2,7 +2,7 @@
 
 **A SaaS starter coding agents can work with:** Next.js, Supabase and a polished, accessible design system, under the MIT licence.
 
-> **Status: v0.1.0 in development (milestone C2 of 3).** The UI, Supabase auth and per-user data with row-level security work today. `pnpm doctor` and the full docs arrive in C3. See [docs/FEATURE_MATRIX.md](docs/FEATURE_MATRIX.md) for exactly what's shipped.
+> **Status: v0.1.0 release candidate.** The UI, auth, per-user data with row-level security, email, analytics, setup checks and agent guides all work today. Next releases add the `npx create-agentlaunch` installer, a blog, file uploads, an AI demo, Stripe billing and a basic admin. See [docs/FEATURE_MATRIX.md](docs/FEATURE_MATRIX.md) for exactly what's shipped.
 
 ![Home page, desktop](docs/screenshots/home-desktop-light.png)
 
@@ -10,7 +10,7 @@
 
 Solo founders and developers, including people building with AI coding agents, who want a clean, typed foundation they can change confidently.
 
-## What works today
+## What you get
 
 - Next.js 16 App Router, React 19, TypeScript strict, Tailwind CSS 4, pnpm
 - A design-token system (color, type, radius, shadow, motion), light/dark/system themes with no flash on load, and reduced-motion support
@@ -19,10 +19,16 @@ Solo founders and developers, including people building with AI coding agents, w
 - Branded 404, error and loading states; metadata, sitemap, robots and a generated Open Graph image
 - Vitest unit tests, Playwright smoke tests at 375px and 1440px, and GitHub Actions CI
 
-- Supabase Auth: email sign-up with confirmation, sign-in, sign-out, password reset, and optional Google OAuth. Sessions are refreshed in `src/proxy.ts`
+- Supabase Auth: email sign-up with confirmation, sign-in, sign-out, password reset, and optional Google, GitHub, Microsoft and Slack sign-in. Sessions are refreshed in `src/proxy.ts`
 - `profiles` and `projects` tables with explicit grants and owner-only row-level security, proven by 22 pgTAP tests (two users plus anonymous)
 - Project create / edit / delete and profile settings, with Zod validation on client and server, toasts, and empty, loading and error states
 - An open-redirect guard on `?next=`, generic auth errors (no account enumeration), and per-IP rate limits on auth actions
+- Email through Resend or any SMTP provider, with a once-only welcome email
+- Plausible or Google Analytics, with a cookie-consent banner that keeps GA off until visitors accept
+- `pnpm run doctor`: a read-only setup check that never prints secrets
+- Deploy guides for Vercel, Docker, Railway and Fly, plus a production `Dockerfile`
+- Built for AI coding agents: `AGENTS.md` recipes, Claude Code skills, Cursor rules and `llms.txt`
+- Automated accessibility checks (axe) on every page in light and dark mode
 
 ## Quickstart
 
@@ -34,6 +40,7 @@ pnpm install
 cp .env.example .env.local
 pnpm db:start                     # needs Docker; see docs/LOCAL_SUPABASE.md
 pnpm exec supabase status         # copy API URL + Publishable key into .env.local
+pnpm run doctor                   # checks your setup; never prints secrets
 pnpm dev                          # http://localhost:3000
 ```
 
@@ -79,7 +86,8 @@ docs/                  feature matrix, changelog, test results, screenshots
 - **Rename the app:** edit `src/config/site.ts`.
 - **Change the look:** edit the tokens in `src/app/globals.css`. Each token has a light value and a `.dark` value.
 - **Environment:** see `.env.example`. The two Supabase variables are required.
-- **Auth details and Google OAuth:** [docs/AUTH_SETUP.md](docs/AUTH_SETUP.md)
+- **Guides:** [Auth and social sign-in](docs/AUTH_SETUP.md) · [Local Supabase](docs/LOCAL_SUPABASE.md) · [Email and analytics](docs/EMAIL_AND_ANALYTICS.md) · [Deploy](docs/DEPLOY.md) · [Troubleshooting](docs/TROUBLESHOOTING.md) · [Security checklist](docs/SECURITY_CHECKLIST.md)
+- **Working with an AI agent:** point it at [AGENTS.md](AGENTS.md). Claude Code also picks up the skills in `.claude/skills/`, and Cursor the rules in `.cursor/rules/`.
 
 ## Community vs Pro
 

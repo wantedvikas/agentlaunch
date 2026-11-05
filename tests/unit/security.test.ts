@@ -1,7 +1,9 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
+import { analyticsConfig } from "@/components/analytics/config";
 import { newPasswordSchema, signInSchema, signUpSchema } from "@/features/auth/schema";
 import { rateLimit, resetRateLimits } from "@/lib/rate-limit";
+import { parseOAuthProviders } from "@/lib/supabase/env";
 import { fieldErrorsFrom } from "@/lib/validation/action-result";
 import { safeNextPath } from "@/lib/validation/redirect";
 
@@ -55,5 +57,36 @@ describe("auth schemas", () => {
     const r = newPasswordSchema.safeParse({ password: "long-enough", confirm: "different" });
     expect(r.success).toBe(false);
     expect(fieldErrorsFrom(r.error!.issues)).toEqual({ confirm: "Passwords don't match." });
+  });
+});
+
+describe("parseOAuthProviders", () => {
+  it("keeps known ids in order, drops unknown, blanks and duplicates", () => {
+    expect(parseOAuthProviders(" github, google,evil ,github,, slack_oidc")).toEqual([
+      "github",
+      "google",
+      "slack_oidc",
+    ]);
+  });
+  it("is empty when unset", () => {
+    expect(parseOAuthProviders(undefined)).toEqual([]);
+  });
+});
+
+describe("analyticsConfig", () => {
+  it("accepts well-formed ids", () => {
+    const c = analyticsConfig({
+      NEXT_PUBLIC_GA_MEASUREMENT_ID: "G-ABC123XYZ",
+      NEXT_PUBLIC_PLAUSIBLE_DOMAIN: "example.com",
+    });
+    expect(c).toMatchObject({ gaId: "G-ABC123XYZ", plausibleDomain: "example.com" });
+  });
+  it.each(["UA-1234-1", "G-abc", "G-ABC123');alert(1)//", ""])("rejects GA id %s", (id) => {
+    expect(analyticsConfig({ NEXT_PUBLIC_GA_MEASUREMENT_ID: id }).gaId).toBeNull();
+  });
+  it("rejects a Plausible domain that isn't a hostname", () => {
+    expect(
+      analyticsConfig({ NEXT_PUBLIC_PLAUSIBLE_DOMAIN: 'x" onload="alert(1)' }).plausibleDomain,
+    ).toBeNull();
   });
 });

@@ -37,7 +37,7 @@ export const coreFeatures: readonly (Feature & { status: "ready" | "planned" })[
     title: "Built for coding agents",
     description:
       "Small typed feature modules, one obvious pattern per job, and AGENTS.md / CLAUDE.md guides with step-by-step recipes.",
-    status: "planned",
+    status: "ready",
   },
   {
     icon: KeyRound,
@@ -55,10 +55,10 @@ export const coreFeatures: readonly (Feature & { status: "ready" | "planned" })[
   },
   {
     icon: Stethoscope,
-    title: "pnpm doctor",
+    title: "pnpm run doctor",
     description:
       "A read-only setup check that explains missing configuration without ever printing a secret.",
-    status: "planned",
+    status: "ready",
   },
   {
     icon: TestTubes,

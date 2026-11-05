@@ -1,0 +1,12 @@
+---
+description: AgentLaunch project rules
+alwaysApply: true
+---
+
+Read and follow `AGENTS.md` at the repository root before changing code. It's the source of truth for this project's rules and step-by-step recipes (RLS table, CRUD feature, design tokens, email).
+
+The essentials:
+- Authorize on the server in every query and Server Action (`requireUser()` + `owner_id` filter); RLS is a backstop.
+- Schema changes only via new migrations in `supabase/migrations/`, each with pgTAP tests.
+- No new dependencies, no secrets in `NEXT_PUBLIC_*`, no service_role key.
+- Before finishing: `pnpm check` (plus `pnpm db:test` / `pnpm test:e2e` when relevant). Report real results.

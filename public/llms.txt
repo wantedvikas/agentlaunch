@@ -1,0 +1,22 @@
+# AgentLaunch Community
+
+> MIT-licensed Next.js 16 + Supabase SaaS starter built for AI coding agents: typed feature modules, owner-only row-level security proven by pgTAP tests, and a read-only setup check (`pnpm run doctor`).
+
+Rules for agents live in AGENTS.md at the repository root. Read it before changing code.
+
+## Docs
+- [README](https://github.com/OWNER/REPO#readme): quickstart, scripts, project structure
+- [AGENTS.md](https://github.com/OWNER/REPO/blob/main/AGENTS.md): rules and step-by-step recipes (CRUD feature, RLS table, design tokens)
+- [Local Supabase](https://github.com/OWNER/REPO/blob/main/docs/LOCAL_SUPABASE.md): local stack, migrations, seed, pgTAP
+- [Auth setup](https://github.com/OWNER/REPO/blob/main/docs/AUTH_SETUP.md): email auth, social providers, callback, rate limits
+- [Email and analytics](https://github.com/OWNER/REPO/blob/main/docs/EMAIL_AND_ANALYTICS.md): Resend/SMTP, welcome email, Plausible/GA, cookie consent
+- [Deploy](https://github.com/OWNER/REPO/blob/main/docs/DEPLOY.md): Vercel, Docker, Railway, Fly
+- [Troubleshooting](https://github.com/OWNER/REPO/blob/main/docs/TROUBLESHOOTING.md)
+- [Security checklist](https://github.com/OWNER/REPO/blob/main/docs/SECURITY_CHECKLIST.md)
+- [Feature matrix](https://github.com/OWNER/REPO/blob/main/docs/FEATURE_MATRIX.md): what Community and Pro include
+
+## Key files
+- src/lib/permissions/auth.ts: requireUser()/getCurrentUser(); call in every data path
+- src/features/projects/: reference feature (schema.ts, queries.ts, actions.ts, components/)
+- supabase/migrations/: schema, grants and RLS; supabase/tests/: authorization tests
+- src/app/globals.css: design tokens

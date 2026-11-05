@@ -1,0 +1,12 @@
+# Never send local secrets or build output into the image build context.
+.env*
+!.env.example
+.git
+.next
+node_modules
+playwright
+playwright-report
+test-results
+supabase/.temp
+supabase/.branches
+docs/screenshots

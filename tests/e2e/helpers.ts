@@ -62,3 +62,15 @@ export async function signIn(page: Page, email: string, password: string) {
     .fill(password);
   await page.getByRole("button", { name: "Sign in" }).click();
 }
+
+/** Number of emails to `to` whose subject contains `subjectIncludes`. */
+export async function countEmails(to: string, subjectIncludes: string) {
+  const res = await fetch(`${MAILPIT}/api/v1/search?query=${encodeURIComponent(`to:"${to}"`)}`);
+  const { messages = [] } = (await res.json()) as { messages?: { Subject: string }[] };
+  return messages.filter((m) => m.Subject.includes(subjectIncludes)).length;
+}
+
+/** Records the visitor's cookie choice up front so the banner doesn't cover the page under test. */
+export async function preConsent(page: Page, value: "granted" | "denied" = "denied") {
+  await page.addInitScript((v) => localStorage.setItem("cookie-consent", v), value);
+}

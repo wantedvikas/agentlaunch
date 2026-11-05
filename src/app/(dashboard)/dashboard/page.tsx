@@ -62,11 +62,10 @@ async function Overview({
         <>
           <dl className="grid gap-4 sm:grid-cols-3">
             {(Object.keys(counts) as (keyof typeof counts)[]).map((s) => (
-              <Card key={s}>
-                <CardContent className="p-5">
-                  <dt className="text-sm text-muted-foreground">{statusLabels[s]} projects</dt>
-                  <dd className="mt-1 text-2xl font-semibold tabular-nums">{counts[s]}</dd>
-                </CardContent>
+              // dt/dd must be direct children of a div inside <dl>, so the Card is that div.
+              <Card key={s} className="p-5">
+                <dt className="text-sm text-muted-foreground">{statusLabels[s]} projects</dt>
+                <dd className="mt-1 text-2xl font-semibold tabular-nums">{counts[s]}</dd>
               </Card>
             ))}
           </dl>

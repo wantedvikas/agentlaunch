@@ -2,7 +2,31 @@
 
 All notable changes to AgentLaunch Community. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: SemVer.
 
-## [Unreleased]
+## [Unreleased] — 0.1.0 release candidate
+
+### Added (milestone C3)
+
+- Social sign-in for Google, GitHub, Microsoft and Slack from one `NEXT_PUBLIC_AUTH_PROVIDERS` list; the server rejects unlisted providers.
+- Email transport (`resend` / `smtp` / `log`) and a welcome email sent once per user, guaranteed by an atomic `claim_welcome_email()` database function (with pgTAP tests).
+- Plausible and Google Analytics, with a cookie-consent banner. GA loads only after consent; declining removes `_ga` cookies; "Cookie preferences" in the footer.
+- `pnpm run doctor`: checks the toolchain, env shape, a secret key in a public variable, Supabase reachability, migrations applied, RLS denying anonymous access, and listed providers enabled. Never prints values.
+- Production `Dockerfile` (standalone output, non-root) and `.dockerignore`; deploy guide for Vercel, Docker, Railway and Fly.
+- AGENTS.md rewritten with a map and recipes; Claude Code skills (`.claude/skills/`), a Cursor rule, and `public/llms.txt`.
+- axe accessibility tests (WCAG 2.1 AA) on public and dashboard pages in both themes; Playwright tests for OAuth redirect, welcome email and consent.
+- Docs: `EMAIL_AND_ANALYTICS.md`, `DEPLOY.md`, `TROUBLESHOOTING.md`, `SECURITY_CHECKLIST.md`, `RELEASE_CHECKLIST.md`.
+
+### Changed
+
+- `NEXT_PUBLIC_AUTH_GOOGLE_ENABLED` is replaced by `NEXT_PUBLIC_AUTH_PROVIDERS` (e.g. `google,github`).
+- Requires Node 22.18+ (built-in TypeScript for `doctor`).
+- Light-theme `success` and `destructive` tokens darkened slightly for 4.5:1 badge contrast.
+
+### Fixed
+
+- The Overview stats list had invalid `<dl>` structure, which screen readers announced incorrectly.
+- A success badge's text contrast was 4.48:1, below the AA minimum.
+
+## Milestone C2
 
 ### Added (milestone C2)
 

@@ -20,20 +20,36 @@
 
 Email links must be opened **in the same browser** that requested them, because the PKCE code verifier is stored in a cookie there. If someone opens a confirmation link elsewhere, the email is still confirmed and the login page asks them to sign in.
 
-## Optional: Google OAuth
+## Optional: social sign-in (Google, GitHub, Microsoft, Slack)
 
-1. In Google Cloud Console, create an OAuth client (Web application).
-   - Authorized redirect URI: `http://127.0.0.1:54321/auth/v1/callback` (local), or `https://<project-ref>.supabase.co/auth/v1/callback` (hosted).
-2. **Local:** put the credentials in `supabase/.env` (git-ignored):
+Buttons render only for providers listed in `NEXT_PUBLIC_AUTH_PROVIDERS` (for example `google,github`). The server action also rejects any provider that isn't listed. `pnpm run doctor` warns if a listed provider isn't enabled in Supabase.
+
+| Provider  | id           | Create the OAuth app at                                                                       |
+| --------- | ------------ | --------------------------------------------------------------------------------------------- |
+| Google    | `google`     | Google Cloud Console → APIs & Services → Credentials (Web application)                        |
+| GitHub    | `github`     | GitHub → Settings → Developer settings → OAuth Apps                                           |
+| Microsoft | `azure`      | Microsoft Entra admin center → App registrations (we request the `email` scope automatically) |
+| Slack     | `slack_oidc` | api.slack.com/apps → OAuth & Permissions (Sign in with Slack / OpenID)                        |
+
+For every provider, the **callback / redirect URI** to register is:
+
+- Local: `http://127.0.0.1:54321/auth/v1/callback`
+- Hosted: `https://<project-ref>.supabase.co/auth/v1/callback`
+
+**Local setup:**
+
+1. Put the credentials in `supabase/.env` (git-ignored):
    ```bash
-   SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID=...
-   SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET=...
+   SUPABASE_AUTH_EXTERNAL_GITHUB_CLIENT_ID=...
+   SUPABASE_AUTH_EXTERNAL_GITHUB_SECRET=...
    ```
-   Set `enabled = true` under `[auth.external.google]` in `supabase/config.toml`, then run `pnpm db:stop && pnpm db:start`.
-   **Hosted:** Authentication → Providers → Google.
-3. Set `NEXT_PUBLIC_AUTH_GOOGLE_ENABLED=true` in `.env.local` and restart. The "Continue with Google" button only renders when this is set.
+   The names follow `SUPABASE_AUTH_EXTERNAL_<ID>_CLIENT_ID` / `_SECRET`, with the id in upper case (`GOOGLE`, `GITHUB`, `AZURE`, `SLACK_OIDC`).
+2. In `supabase/config.toml`, set `enabled = true` under that provider's `[auth.external.<id>]` block. Run `pnpm db:stop && pnpm db:start`.
+3. Add the id to `NEXT_PUBLIC_AUTH_PROVIDERS` in `.env.local` and restart `pnpm dev`.
 
-Google sign-in is **not covered by automated tests**, because it needs real Google credentials.
+**Hosted:** Supabase dashboard → Authentication → Providers, then set `NEXT_PUBLIC_AUTH_PROVIDERS` in your host's env and redeploy.
+
+Automated tests cover the button → provider redirect. A full sign-in with a real provider needs real credentials and isn't automated.
 
 ## Production email
 

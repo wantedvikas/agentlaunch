@@ -9,4 +9,19 @@ export function getSupabaseEnv() {
   return { url, key };
 }
 
-export const isGoogleAuthEnabled = process.env.NEXT_PUBLIC_AUTH_GOOGLE_ENABLED === "true";
+/** Supabase provider ids we ship buttons for, with their display names. */
+export const OAUTH_PROVIDERS = {
+  google: "Google",
+  github: "GitHub",
+  azure: "Microsoft",
+  slack_oidc: "Slack",
+} as const;
+export type OAuthProvider = keyof typeof OAUTH_PROVIDERS;
+
+/** Parses NEXT_PUBLIC_AUTH_PROVIDERS ("google,github"); unknown ids are ignored. */
+export function parseOAuthProviders(raw: string | undefined): OAuthProvider[] {
+  const ids = (raw ?? "").split(",").map((s) => s.trim());
+  return [...new Set(ids)].filter((id): id is OAuthProvider => id in OAUTH_PROVIDERS);
+}
+
+export const enabledOAuthProviders = parseOAuthProviders(process.env.NEXT_PUBLIC_AUTH_PROVIDERS);

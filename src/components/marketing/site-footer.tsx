@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { CookiePreferencesButton } from "@/components/analytics/analytics";
 import { siteConfig } from "@/config/site";
 
 import { Logo } from "./logo";
@@ -37,6 +38,7 @@ export function SiteFooter() {
               Contact (not configured)
             </span>
           )}
+          <CookiePreferencesButton />
         </nav>
       </div>
     </footer>

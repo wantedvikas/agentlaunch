@@ -6,9 +6,12 @@ import { redirect } from "next/navigation";
 import { siteConfig } from "@/config/site";
 import { requireUser } from "@/lib/permissions/auth";
 import { rateLimit } from "@/lib/rate-limit";
+import { enabledOAuthProviders, type OAuthProvider } from "@/lib/supabase/env";
 import { createClient } from "@/lib/supabase/server";
 import { fieldErrorsFrom, type ActionResult } from "@/lib/validation/action-result";
 import { safeNextPath } from "@/lib/validation/redirect";
+
+import { sendWelcomeOnce } from "./welcome";
 
 import {
   newPasswordSchema,
@@ -59,6 +62,8 @@ export async function signIn(input: SignInInput): Promise<ActionResult> {
     // Same message for unknown email and wrong password, so accounts can't be enumerated.
     return { ok: false, error: "Incorrect email or password." };
   }
+  // Covers users whose confirmation link was opened in another browser (callback couldn't sign them in).
+  await sendWelcomeOnce();
   redirect(safeNextPath(next));
 }
 
@@ -143,12 +148,16 @@ export async function signOut() {
   redirect("/login?notice=signed-out");
 }
 
-export async function signInWithGoogle(formData: FormData) {
+export async function signInWithOAuth(formData: FormData) {
+  const provider = String(formData.get("provider") ?? "");
+  // Only providers switched on in NEXT_PUBLIC_AUTH_PROVIDERS; the form value is untrusted.
+  if (!enabledOAuthProviders.includes(provider as OAuthProvider)) redirect("/login?error=oauth");
   const next = safeNextPath(String(formData.get("next") ?? ""));
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: "google",
-    options: { redirectTo: callbackUrl(next) },
+    provider: provider as OAuthProvider,
+    // Microsoft (azure) only returns an email address when asked for this scope.
+    options: { redirectTo: callbackUrl(next), scopes: provider === "azure" ? "email" : undefined },
   });
   if (error || !data.url) redirect("/login?error=oauth");
   redirect(data.url);

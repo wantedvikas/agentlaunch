@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import { DEMO, latestEmailLink, signIn, signUpAndConfirm } from "./helpers";
+import { countEmails, DEMO, latestEmailLink, signIn, signUpAndConfirm } from "./helpers";
 
 // Account-creating flows run once (desktop) to stay within auth rate limits.
 test.skip(({ isMobile }) => isMobile, "auth flows run on desktop only");
@@ -119,4 +119,20 @@ test("password reset by email", async ({ page }) => {
   await page.getByRole("menuitem", { name: "Sign out" }).click();
   await signIn(page, email, "brand-new-password-1");
   await expect(page).toHaveURL(/\/dashboard$/);
+
+  // Welcome email went out once (first confirmed sign-in), not again on later sign-ins.
+  await expect.poll(() => countEmails(email, "Welcome to AgentLaunch")).toBe(1);
+});
+
+test("social sign-in buttons start the provider's OAuth flow", async ({ page }) => {
+  await page.goto("/login");
+  const authorize = page.waitForRequest((r) =>
+    r.url().includes("/auth/v1/authorize?provider=github"),
+  );
+  await page.getByRole("button", { name: "Continue with GitHub" }).click();
+  const url = new URL((await authorize).url());
+  expect(url.searchParams.get("redirect_to")).toMatch(/\/auth\/callback\?next=%2Fdashboard$/);
+  // Providers not listed in NEXT_PUBLIC_AUTH_PROVIDERS render no button.
+  await page.goto("/login");
+  await expect(page.getByRole("button", { name: "Continue with Google" })).toHaveCount(0);
 });

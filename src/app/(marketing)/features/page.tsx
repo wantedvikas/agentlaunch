@@ -20,12 +20,19 @@ export const metadata: Metadata = {
 };
 
 const comparison: [string, string, string][] = [
-  ["Design system, UI kit, dark mode", "Included", "Included"],
-  ["Supabase auth and row-level security", "Included", "Included"],
-  ["Dashboard and example CRUD", "Included", "Included"],
-  ["pnpm doctor setup checks", "Basic", "Advanced"],
-  ["Stripe checkout, portal, webhooks", "—", "Included"],
-  ["Email templates, blog, file uploads", "—", "Included"],
+  ["Design system, UI kit, dark mode", "Included", "Included + premium layouts"],
+  ["Auth (email, Google, GitHub, Microsoft, Slack) and row-level security", "Included", "Included"],
+  ["Dashboard, example CRUD, file uploads, blog", "Included", "Included"],
+  [
+    "Stripe subscriptions with verified webhooks",
+    "Basic (one plan)",
+    "Full: one-time, tiers, trials, refunds",
+  ],
+  ["Other payment providers (Lemon Squeezy, Polar, Paddle, Dodo)", "—", "Included"],
+  ["Admin dashboard", "Basic", "Roles, user actions, analytics"],
+  ["AI", "Server-side demo", "Credits and usage limits"],
+  ["Teams, multiple languages, mobile app", "—", "Included"],
+  ["Project scaffolder (npx create-agentlaunch)", "Included", "Included + Pro modules"],
   ["Licence", "MIT", "Commercial"],
 ];
 

@@ -142,3 +142,40 @@ test("forms submitted before hydration never put credentials in the URL", async 
   expect(page.url()).not.toContain("secret-value");
   expect(page.url()).not.toContain("someone");
 });
+
+test.describe("cookie consent", () => {
+  test("Google Analytics loads only after the visitor accepts", async ({ page }) => {
+    const gaRequests: string[] = [];
+    await page.route(/googletagmanager\.com/, (route) => {
+      gaRequests.push(route.request().url());
+      return route.fulfill({ body: "", contentType: "text/javascript" });
+    });
+    await page.goto("/");
+    const banner = page.getByRole("region", { name: "Cookie consent" });
+    await expect(banner).toBeVisible();
+    await page.waitForLoadState("networkidle");
+    expect(gaRequests).toEqual([]);
+
+    await banner.getByRole("button", { name: "Accept analytics" }).click();
+    await expect(banner).toBeHidden();
+    await expect.poll(() => gaRequests.length).toBeGreaterThan(0);
+    expect(gaRequests[0]).toContain("id=G-TEST000000");
+  });
+
+  test("declining keeps analytics off and the choice can be changed later", async ({ page }) => {
+    const gaRequests: string[] = [];
+    await page.route(/googletagmanager\.com/, (route) => {
+      gaRequests.push(route.request().url());
+      return route.fulfill({ body: "" });
+    });
+    await page.goto("/");
+    await page.getByRole("button", { name: "Essential only" }).click();
+    await page.reload();
+    await page.waitForLoadState("networkidle");
+    await expect(page.getByRole("region", { name: "Cookie consent" })).toHaveCount(0);
+    expect(gaRequests).toEqual([]);
+
+    await page.getByRole("button", { name: "Cookie preferences" }).click();
+    await expect(page.getByRole("region", { name: "Cookie consent" })).toBeVisible();
+  });
+});

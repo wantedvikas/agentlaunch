@@ -4,7 +4,7 @@ import { Suspense } from "react";
 
 import { AuthCard } from "@/features/auth/components/auth-card";
 import { FormSkeleton } from "@/features/auth/components/form-skeleton";
-import { GoogleButton } from "@/features/auth/components/google-button";
+import { OAuthButtons } from "@/features/auth/components/oauth-buttons";
 import { LoginForm } from "@/features/auth/components/login-form";
 import { SupabaseNotConfigured } from "@/features/auth/components/not-configured";
 import { getSupabaseEnv } from "@/lib/supabase/env";
@@ -23,7 +23,7 @@ async function LoginFormWithParams({
   const next = safeNextPath(first(sp.next));
   return (
     <>
-      <GoogleButton next={next} />
+      <OAuthButtons next={next} />
       <LoginForm next={next} notice={first(sp.notice)} error={first(sp.error)} />
     </>
   );

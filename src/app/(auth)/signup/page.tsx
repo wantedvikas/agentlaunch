@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { AuthCard } from "@/features/auth/components/auth-card";
-import { GoogleButton } from "@/features/auth/components/google-button";
+import { OAuthButtons } from "@/features/auth/components/oauth-buttons";
 import { SupabaseNotConfigured } from "@/features/auth/components/not-configured";
 import { SignupForm } from "@/features/auth/components/signup-form";
 import { getSupabaseEnv } from "@/lib/supabase/env";
@@ -25,7 +25,7 @@ export default function SignupPage() {
     >
       {getSupabaseEnv() ? (
         <>
-          <GoogleButton />
+          <OAuthButtons />
           <SignupForm />
         </>
       ) : (

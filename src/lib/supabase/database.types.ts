@@ -30,6 +30,7 @@ export type Database = {
           display_name: string | null;
           id: string;
           updated_at: string;
+          welcomed_at: string | null;
         };
         ComputedFields: never;
         Insert: {
@@ -38,6 +39,7 @@ export type Database = {
           display_name?: string | null;
           id: string;
           updated_at?: string;
+          welcomed_at?: string | null;
         };
         Update: {
           avatar_url?: string | null;
@@ -45,6 +47,7 @@ export type Database = {
           display_name?: string | null;
           id?: string;
           updated_at?: string;
+          welcomed_at?: string | null;
         };
         Relationships: [];
       };
@@ -84,7 +87,7 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      claim_welcome_email: { Args: Record<PropertyKey, never>; Returns: boolean };
     };
     Enums: {
       project_status: "active" | "paused" | "archived";
