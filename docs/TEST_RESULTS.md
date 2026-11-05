@@ -12,7 +12,7 @@ Results exactly as they ran. Newest milestone first.
 | Unit tests          | `pnpm test`                                                                                      | ✅ 65 passed, 5 files                                                            |
 | Build               | `pnpm build`                                                                                     | ✅                                                                               |
 | pgTAP               | `pnpm db:test`                                                                                   | ✅ 27/27 (2 files)                                                               |
-| E2E + accessibility | `pnpm test:e2e`                                                                                  | ✅ 41 passed, 35 skipped by design                                               |
+| E2E + accessibility | `pnpm test:e2e`                                                                                  | ✅ 42 passed (41 + demo sign-in setup), 35 skipped by design                     |
 | Setup check         | `pnpm run doctor`                                                                                | ✅ (plus negative cases in unit tests)                                           |
 | Docker image        | `docker build` + run                                                                             | ✅ `/` 200, `/login` 200, `/dashboard` → 307 to login, `/robots.txt` 200; 301 MB |
 | Clean-clone dry run | committed files only → `pnpm install --frozen-lockfile` → `.env.example` → doctor → `pnpm check` | ✅                                                                               |

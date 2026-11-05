@@ -10,11 +10,18 @@ export default defineConfig({
   reporter: process.env.CI ? "github" : "list",
   use: { baseURL: `http://localhost:${PORT}`, trace: "on-first-retry" },
   projects: [
+    // Signs in the seeded demo user once and saves the session for the signed-in tests.
+    { name: "setup", testMatch: /auth\.setup\.ts/ },
     {
       name: "desktop",
       use: { ...devices["Desktop Chrome"], viewport: { width: 1440, height: 900 } },
+      dependencies: ["setup"],
     },
-    { name: "mobile", use: { ...devices["Pixel 7"], viewport: { width: 375, height: 812 } } },
+    {
+      name: "mobile",
+      use: { ...devices["Pixel 7"], viewport: { width: 375, height: 812 } },
+      dependencies: ["setup"],
+    },
   ],
   // Tests run against a production build so they match what ships. Requires local Supabase
   // (`pnpm db:start`) and NEXT_PUBLIC_SUPABASE_* in .env.local or the environment.
