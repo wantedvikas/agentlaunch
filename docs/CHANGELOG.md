@@ -2,6 +2,12 @@
 
 All notable changes to AgentLaunch Community. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: SemVer.
 
+## [0.4.2] — 2026-11-05 (npm discoverability)
+
+### Changed
+
+- **`create-agentlaunch` on npm:** a clearer description, 25 search keywords (SaaS boilerplate, AI SaaS, coding agents, Next.js, Supabase, Stripe) and homepage and issue links. No code changes.
+
 ## [0.4.1] — 2026-11-05 (design refresh)
 
 ### Changed

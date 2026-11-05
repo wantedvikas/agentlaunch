@@ -1,8 +1,39 @@
 {
   "name": "create-agentlaunch",
-  "version": "0.4.1",
-  "description": "Create a new AgentLaunch app (Next.js + Supabase SaaS starter) with only the parts you choose.",
+  "version": "0.4.2",
+  "description": "AI SaaS boilerplate: create a Next.js + Supabase SaaS starter with Stripe, auth, admin and AGENTS.md for AI coding agents (Claude Code, Cursor, Codex).",
+  "keywords": [
+    "saas",
+    "saas-boilerplate",
+    "saas-starter",
+    "saas-template",
+    "saas-kit",
+    "ai-saas",
+    "ai-saas-boilerplate",
+    "ai-agent",
+    "coding-agent",
+    "agents-md",
+    "claude-code",
+    "cursor",
+    "boilerplate",
+    "starter-kit",
+    "template",
+    "nextjs",
+    "nextjs-boilerplate",
+    "nextjs-starter",
+    "supabase",
+    "supabase-starter",
+    "stripe",
+    "tailwindcss",
+    "typescript",
+    "create-app",
+    "cli"
+  ],
   "license": "MIT",
+  "homepage": "https://github.com/wantedvikas/agentlaunch#readme",
+  "bugs": {
+    "url": "https://github.com/wantedvikas/agentlaunch/issues"
+  },
   "type": "module",
   "bin": {
     "create-agentlaunch": "index.mjs"
