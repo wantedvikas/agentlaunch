@@ -1,5 +1,7 @@
-import { spawn } from "node:child_process";
-import { cp, mkdir } from "node:fs/promises";
+import { spawn, spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
+import { existsSync } from "node:fs";
+import { cp, mkdir, readFile } from "node:fs/promises";
 import { basename, resolve } from "node:path";
 import { Readable } from "node:stream";
 
@@ -45,4 +47,48 @@ export async function fetchTemplate(template, dest) {
     tar.on("close", (code) => (code === 0 ? ok(undefined) : fail(new Error(`tar exited ${code}`))));
     Readable.fromWeb(/** @type {any} */ (res.body)).pipe(tar.stdin);
   });
+}
+
+/**
+ * Checks a release archive against the `<archive>.sha256` file shipped next to it.
+ * Returns the hash, or null when there's no checksum file (the caller warns).
+ * @param {string} archive
+ */
+export async function verifyChecksum(archive) {
+  const sumFile = `${archive}.sha256`;
+  if (!existsSync(sumFile)) return null;
+  const expected = (await readFile(sumFile, "utf8")).trim().split(/\s+/)[0]?.toLowerCase();
+  const actual = createHash("sha256")
+    .update(await readFile(archive))
+    .digest("hex");
+  if (expected !== actual)
+    throw new Error(
+      `checksum mismatch for ${basename(archive)}: the download is corrupt or altered`,
+    );
+  return actual;
+}
+
+/**
+ * Extracts a release archive (.tar.gz with one top-level folder) into `dest`.
+ * System tar refuses absolute paths and `..` entries by default.
+ * @param {string} archive
+ * @param {string} dest
+ */
+export async function extractArchive(archive, dest) {
+  await mkdir(dest, { recursive: true });
+  const r = spawnSync("tar", ["-xzf", archive, "--strip-components=1", "-C", dest], {
+    stdio: ["ignore", "ignore", "inherit"],
+  });
+  if (r.status !== 0)
+    throw new Error(`couldn't extract ${basename(archive)} (expected a .tar.gz release)`);
+}
+
+/** The CLI arguments minus `--from <x>` / `--from=<x>`. @param {string[]} argv */
+export function withoutFrom(argv) {
+  const out = [];
+  for (let i = 0; i < argv.length; i++) {
+    if (argv[i] === "--from") i++;
+    else if (!argv[i].startsWith("--from=")) out.push(argv[i]);
+  }
+  return out;
 }

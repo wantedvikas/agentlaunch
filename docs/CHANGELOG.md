@@ -4,6 +4,10 @@ All notable changes to AgentLaunch Community. Format: [Keep a Changelog](https:/
 
 ## [Unreleased]
 
+### Added
+
+- **`create-agentlaunch --from <archive>`:** set up a project from a downloaded release (`.tar.gz`, e.g. AgentLaunch Pro). The CLI checks the archive against `<archive>.sha256` when it's there, then runs the CLI bundled in the release, so the module list always matches the release.
+
 ### Fixed
 
 - **Accessibility:** a `Select` inside `FormField` now gets the field's label, hint and error on its trigger. Before, they went to Radix's root, which renders no element, so screen readers announced the dropdown without its label (for example the project Status field).

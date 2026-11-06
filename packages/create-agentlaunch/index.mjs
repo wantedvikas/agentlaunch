@@ -1,13 +1,20 @@
 #!/usr/bin/env node
 import { spawnSync } from "node:child_process";
 import { existsSync, readdirSync, readFileSync } from "node:fs";
-import { rm } from "node:fs/promises";
-import { basename, resolve } from "node:path";
+import { mkdtemp, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { basename, join, resolve } from "node:path";
 import { createInterface } from "node:readline/promises";
 import { parseArgs } from "node:util";
 
 import { MODULE_IDS, MODULES, OAUTH_PROVIDERS } from "./lib/modules.mjs";
-import { DEFAULT_REPO, fetchTemplate } from "./lib/source.mjs";
+import {
+  DEFAULT_REPO,
+  extractArchive,
+  fetchTemplate,
+  verifyChecksum,
+  withoutFrom,
+} from "./lib/source.mjs";
 import { isValidName, titleCase, transformTemplate } from "./lib/transform.mjs";
 
 const { version } = JSON.parse(readFileSync(new URL("./package.json", import.meta.url), "utf8"));
@@ -30,6 +37,8 @@ Options:
   --no-install            Don't run pnpm install
   --no-git                Don't create a git repository
   --template <src>        owner/repo#ref or a local path (default: ${DEFAULT_REPO}#v${version})
+  --from <archive>        A downloaded release (.tar.gz), e.g. AgentLaunch Pro; checked against
+                          <archive>.sha256 when present, then set up with the CLI it contains
   -y, --yes               Accept defaults; never prompt
   -h, --help              Show this help
 `;
@@ -51,11 +60,13 @@ async function main() {
       "no-install": { type: "boolean" },
       "no-git": { type: "boolean" },
       template: { type: "string" },
+      from: { type: "string" },
       yes: { type: "boolean", short: "y" },
       help: { type: "boolean", short: "h" },
     },
   });
   if (values.help) return console.log(HELP);
+  if (values.from) return fromArchive(values);
 
   const interactive = !values.yes && process.stdin.isTTY;
   if (!values.yes && !process.stdin.isTTY)
@@ -148,6 +159,39 @@ async function main() {
       );
   } finally {
     rl?.close();
+  }
+}
+
+/**
+ * `--from <archive>`: verify, extract to a temp folder, then run the CLI bundled in the release
+ * with the same arguments, so its module list always matches the release's files.
+ * @param {Record<string, unknown>} values
+ */
+async function fromArchive(values) {
+  if (values.template) throw new Error("use either --from or --template, not both");
+  const archive = resolve(String(values.from));
+  if (!existsSync(archive)) throw new Error(`${archive} not found`);
+  const sum = await verifyChecksum(archive);
+  console.log(
+    sum
+      ? `✓ checksum verified (sha256 ${sum.slice(0, 12)}…)`
+      : `! no ${basename(archive)}.sha256 next to the archive; skipping verification`,
+  );
+  const dir = await mkdtemp(join(tmpdir(), "agentlaunch-release-"));
+  try {
+    await extractArchive(archive, dir);
+    const bundled = join(dir, "packages/create-agentlaunch/index.mjs");
+    if (!existsSync(bundled)) throw new Error(`${basename(archive)} isn't an AgentLaunch release`);
+    const r = spawnSync(
+      process.execPath,
+      [bundled, ...withoutFrom(process.argv.slice(2)), "--template", dir],
+      {
+        stdio: "inherit",
+      },
+    );
+    process.exitCode = r.status ?? 1;
+  } finally {
+    await rm(dir, { recursive: true, force: true });
   }
 }
 
