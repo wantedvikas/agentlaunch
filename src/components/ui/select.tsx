@@ -8,7 +8,36 @@ import { cn } from "@/lib/utils";
 
 import { fieldBase } from "./input";
 
-export const Select = SelectPrimitive.Root;
+/** Field wiring from FormField (id, aria-*). Radix's Root renders no element, so the trigger gets it. */
+type FieldProps = {
+  id?: string;
+  "aria-invalid"?: React.AriaAttributes["aria-invalid"];
+  "aria-describedby"?: string;
+  "aria-required"?: React.AriaAttributes["aria-required"];
+};
+const SelectFieldContext = React.createContext<FieldProps>({});
+
+/** Radix Select root that forwards FormField's label and error wiring to its trigger. */
+export function Select({
+  id,
+  "aria-invalid": ariaInvalid,
+  "aria-describedby": ariaDescribedBy,
+  "aria-required": ariaRequired,
+  ...props
+}: React.ComponentProps<typeof SelectPrimitive.Root> & FieldProps) {
+  return (
+    <SelectFieldContext
+      value={{
+        id,
+        "aria-invalid": ariaInvalid,
+        "aria-describedby": ariaDescribedBy,
+        "aria-required": ariaRequired,
+      }}
+    >
+      <SelectPrimitive.Root {...props} />
+    </SelectFieldContext>
+  );
+}
 export const SelectValue = SelectPrimitive.Value;
 export const SelectGroup = SelectPrimitive.Group;
 
@@ -19,6 +48,7 @@ export function SelectTrigger({
 }: React.ComponentProps<typeof SelectPrimitive.Trigger>) {
   return (
     <SelectPrimitive.Trigger
+      {...React.use(SelectFieldContext)}
       className={cn(
         fieldBase,
         "flex h-10 items-center justify-between gap-2 text-left data-[placeholder]:text-muted-foreground",

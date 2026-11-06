@@ -5,6 +5,13 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { Button } from "@/components/ui/button";
 import { FormField } from "@/components/ui/form-field";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { createProject } from "@/features/projects/actions";
 import { ProjectFormDialog } from "@/features/projects/components/project-form-dialog";
 
@@ -38,6 +45,24 @@ describe("FormField", () => {
     );
     expect(screen.getByLabelText("Name")).toHaveAttribute("aria-invalid", "true");
     expect(screen.getByLabelText("Name")).toHaveAccessibleDescription("Required");
+  });
+
+  it("labels a Select's trigger, not just its (element-less) root", () => {
+    render(
+      <FormField label="Status" error="Pick one">
+        <Select defaultValue="a">
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="a">A</SelectItem>
+          </SelectContent>
+        </Select>
+      </FormField>,
+    );
+    const trigger = screen.getByRole("combobox", { name: "Status" });
+    expect(trigger).toHaveAttribute("aria-invalid", "true");
+    expect(trigger).toHaveAccessibleDescription("Pick one");
   });
 });
 

@@ -50,7 +50,7 @@ test("sign up, confirm email, full project CRUD, sign out", async ({ page }) => 
   // Update
   await row.getByRole("button", { name: "Edit Launch plan" }).click();
   await dialog.getByLabel(/^Name/).fill("Launch plan v2");
-  await dialog.getByRole("combobox").click();
+  await dialog.getByRole("combobox", { name: "Status" }).click();
   await page.getByRole("option", { name: "Paused" }).click();
   await dialog.getByRole("button", { name: "Save changes" }).click();
   const updated = page.getByRole("row", { name: /Launch plan v2/ });

@@ -2,6 +2,16 @@
 
 All notable changes to AgentLaunch Community. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: SemVer.
 
+## [Unreleased]
+
+### Fixed
+
+- **Accessibility:** a `Select` inside `FormField` now gets the field's label, hint and error on its trigger. Before, they went to Radix's root, which renders no element, so screen readers announced the dropdown without its label (for example the project Status field).
+
+### Changed
+
+- **CI:** GitHub Actions updated to versions that run on Node 24: `actions/checkout@v7`, `actions/setup-node@v7`, `pnpm/action-setup@v6`, `actions/upload-artifact@v7`. GitHub is retiring the Node 20 runtime for actions.
+
 ## [0.4.2] — 2026-11-05 (npm discoverability)
 
 ### Changed
