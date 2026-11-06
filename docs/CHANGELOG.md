@@ -2,7 +2,7 @@
 
 All notable changes to AgentLaunch Community. Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: SemVer.
 
-## [Unreleased]
+## [0.5.0] — 2026-11-06 (install from a release archive)
 
 ### Added
 

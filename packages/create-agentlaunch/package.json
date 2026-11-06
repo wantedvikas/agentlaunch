@@ -1,6 +1,6 @@
 {
   "name": "create-agentlaunch",
-  "version": "0.4.2",
+  "version": "0.5.0",
   "description": "AI SaaS boilerplate: create a Next.js + Supabase SaaS starter with Stripe, auth, admin and AGENTS.md for AI coding agents (Claude Code, Cursor, Codex).",
   "keywords": [
     "saas",
